@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLM Visualization Tool</title>
+  <style>
+    /* ===================== RESET & BASE ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+
+    /* ===================== LAYOUT ===================== */
+    header {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      border-bottom: 1px solid #30363d;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header h1 { font-size: 1.4rem; font-weight: 700; color: #58a6ff; }
+    header p  { font-size: 0.85rem; color: #8b949e; }
+
+    nav {
+      display: flex;
+      gap: 4px;
+      padding: 12px 24px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background: transparent;
+      border: 1px solid #30363d;
+      color: #8b949e;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    nav button:hover, nav button.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: #fff;
+    }
+
+    main {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ===================== CARDS ===================== */
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #58a6ff;
+      margin-bottom: 12px;
+    }
+    .card p { font-size: 0.9rem; color: #8b949e; line-height: 1.6; }
+
+    /* ===================== GRID HELPERS ===================== */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 700px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ===================== TOKENIZER ===================== */
+    #tok-input {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #e6edf3;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 80px;
+    }
+    #tok-input:focus { outline: none; border-color: #58a6ff; }
+
+    .token-display {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+      min-height: 40px;
+      padding: 10px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+    }
+    .token {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-family: monospace;
+      font-weight: 600;
+      cursor: default;
+      transition: transform 0.15s;
+    }
+    .token:hover { transform: translateY(-2px); }
+
+    .token-colors {
+      --tc0: #58a6ff; --tc1: #3fb950; --tc2: #f78166;
+      --tc3: #d2a8ff; --tc4: #ffa657; --tc5: #79c0ff;
+      --tc6: #56d364; --tc7: #ff7b72;
+    }
+    .tc0 { background: #1a3a5c; color: var(--tc0); border: 1px solid var(--tc0); }
+    .tc1 { background: #163020; color: var(--tc1); border: 1px solid var(--tc1); }
+    .tc2 { background: #3d1c1c; color: var(--tc2); border: 1px solid var(--tc2); }
+    .tc3 { background: #2d1f4a; color: var(--tc3); border: 1px solid var(--tc3); }
+    .tc4 { background: #3d2700; color: var(--tc4); border: 1px solid var(--tc4); }
+    .tc5 { background: #162a3d; color: var(--tc5); border: 1px solid var(--tc5); }
+    .tc6 { background: #0d2c14; color: var(--tc6); border: 1px solid var(--tc6); }
+    .tc7 { background: #3d1218; color: var(--tc7); border: 1px solid var(--tc7); }
+
+    .tok-stats { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+    .tok-stat { font-size: 0.82rem; color: #8b949e; }
+    .tok-stat span { color: #58a6ff; font-weight: 700; }
+
+    /* ===================== ATTENTION ===================== */
+    #attn-canvas-wrap {
+      overflow-x: auto;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    #attn-canvas { display: block; margin: 0 auto; }
+
+    .attn-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .attn-controls label { font-size: 0.85rem; color: #8b949e; }
+    .attn-controls select, .attn-controls input[type=range] {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .attn-controls select:focus, .attn-controls input:focus { outline: none; border-color: #58a6ff; }
+
+    /* ===================== TRANSFORMER ===================== */
+    #tf-canvas-wrap {
+      overflow: auto;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    /* ===================== EMBEDDING ===================== */
+    #emb-canvas {
+      display: block;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+    }
+    .emb-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .emb-controls button {
+      background: #1f6feb;
+      border: none;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .emb-controls button:hover { background: #388bfd; }
+    .emb-controls label { font-size: 0.85rem; color: #8b949e; }
+    .emb-controls select {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    /* ===================== GENERATION ===================== */
+    .gen-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    #gen-prompt {
+      flex: 1;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #e6edf3;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+    #gen-prompt:focus { outline: none; border-color: #58a6ff; }
+    .gen-btn {
+      background: #238636;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .gen-btn:hover { background: #2ea043; }
+    .gen-btn:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+
+    #gen-output {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 80px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+    .gen-token-new {
+      animation: fadeIn 0.3s ease;
+      color: #3fb950;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .prob-bar-wrap {
+      margin-top: 14px;
+    }
+    .prob-bar-wrap h3 { font-size: 0.9rem; color: #8b949e; margin-bottom: 8px; }
+    .prob-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .prob-bar .word { width: 110px; font-family: monospace; font-size: 0.82rem; color: #e6edf3; text-align: right; }
+    .prob-bar .bar-bg { flex: 1; background: #21262d; border-radius: 4px; height: 14px; overflow: hidden; }
+    .prob-bar .bar-fill { height: 100%; background: linear-gradient(90deg, #1f6feb, #58a6ff); border-radius: 4px; transition: width 0.4s; }
+    .prob-bar .pct { width: 46px; font-size: 0.78rem; color: #58a6ff; }
+
+    /* ===================== SETTINGS SLIDERS ===================== */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .slider-row label { width: 160px; font-size: 0.85rem; color: #8b949e; }
+    .slider-row input[type=range] {
+      flex: 1;
+      accent-color: #58a6ff;
+      cursor: pointer;
+    }
+    .slider-val {
+      width: 50px;
+      text-align: right;
+      font-size: 0.85rem;
+      color: #58a6ff;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    /* ===================== LEGEND ===================== */
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #8b949e; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    /* ===================== INFO BOX ===================== */
+    .info-box {
+      background: #161b22;
+      border-left: 3px solid #58a6ff;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: #8b949e;
+      line-height: 1.6;
+    }
+
+    /* ===================== SCROLLBAR ===================== */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🧠 LLM Visualization Tool</h1>
+    <p>Interactive exploration of Large Language Model internals</p>
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="active" data-panel="tokenizer">Tokenizer</button>
+  <button data-panel="attention">Attention</button>
+  <button data-panel="transformer">Transformer</button>
+  <button data-panel="embeddings">Embeddings</button>
+  <button data-panel="generation">Generation</button>
+  <button data-panel="about">About</button>
+</nav>
+
+<main>
+
+  <!-- ====== TOKENIZER PANEL ====== -->
+  <div class="panel active" id="tokenizer">
+    <div class="card">
+      <h2>Tokenizer — BPE Simulation</h2>
+      <p>Type any text below to see how a BPE-style tokenizer splits it into sub-word tokens. Each color represents a distinct token.</p>
+    </div>
+    <div class="card">
+      <textarea id="tok-input" placeholder="Type something like: The quick brown fox jumps over the lazy dog">The quick brown fox jumps over the lazy dog.</textarea>
+      <div class="token-display" id="tok-display"></div>
+      <div class="tok-stats">
+        <div class="tok-stat">Tokens: <span id="tok-count">0</span></div>
+        <div class="tok-stat">Characters: <span id="char-count">0</span></div>
+        <div class="tok-stat">Avg chars/token: <span id="avg-chars">0</span></div>
+        <div class="tok-stat">Unique tokens: <span id="uniq-count">0</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Token IDs</h2>
+      <div id="tok-ids" style="font-family:monospace;font-size:0.82rem;color:#58a6ff;line-height:2;word-break:break-all;"></div>
+    </div>
+    <div class="info-box">
+      <strong>How it works:</strong> Modern LLMs use Byte-Pair Encoding (BPE). Common sub-word sequences are merged into single tokens. This lets the model handle unseen words by composing them from known sub-tokens. GPT-4 uses ~100k tokens; common English words are typically 1 token each.
+    </div>
+  </div>
+
+  <!-- ====== ATTENTION PANEL ====== -->
+  <div class="panel" id="attention">
+    <div class="card">
+      <h2>Self-Attention Visualization</h2>
+      <p>The attention matrix shows how strongly each token attends to every other token. Brighter cells = higher attention weight.</p>
+    </div>
+    <div class="card">
+      <div class="attn-controls">
+        <label>Sentence:
+          <select id="attn-sentence">
+            <option value="0">The cat sat on the mat</option>
+            <option value="1">She loves playing the piano every day</option>
+            <option value="2">The bank can guarantee deposits</option>
+            <option value="3">Time flies like an arrow fruit flies like a banana</option>
+          </select>
+        </label>
+        <label>Head:
+          <select id="attn-head">
+            <option value="0">Head 1 (Syntactic)</option>
+            <option value="1">Head 2 (Semantic)</option>
+            <option value="2">Head 3 (Positional)</option>
+            <option value="3">Head 4 (Coreference)</option>
+          </select>
+        </label>
+        <label>Temperature:
+          <input type="range" id="attn-temp" min="1" max="20" value="8" step="1" />
+          <span id="attn-temp-val">0.8</span>
+        </label>
+      </div>
+      <div id="attn-canvas-wrap">
+        <canvas id="attn-canvas"></canvas>
+      </div>
+      <div class="legend" style="margin-top:12px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#0d1117;border:1px solid #30363d"></div> No attention</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1a3a5c"></div> Low</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1f6feb"></div> Medium</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div> High</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e6edf3"></div> Max</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Self-Attention:</strong> For each token, attention scores are computed against all other tokens via Q·Kᵀ/√d_k, then softmax-normalized. Multiple "heads" capture different relationship types simultaneously — syntax, semantics, position, coreference, etc.
+    </div>
+  </div>
+
+  <!-- ====== TRANSFORMER PANEL ====== -->
+  <div class="panel" id="transformer">
+    <div class="card">
+      <h2>Transformer Architecture</h2>
+      <p>Click any block to learn more about that component. Hover to highlight data flow.</p>
+    </div>
+    <div class="card" id="tf-canvas-wrap">
+      <canvas id="tf-canvas" width="760" height="560"></canvas>
+    </div>
+    <div class="card" id="tf-detail">
+      <h2 id="tf-detail-title">Click a component above</h2>
+      <p id="tf-detail-text">Select any block in the architecture diagram to see a detailed explanation.</p>
+    </div>
+    <div class="info-box">
+      <strong>Architecture overview:</strong> The Transformer processes tokens in parallel through N stacked decoder layers. Each layer applies multi-head self-attention followed by a feed-forward network, with residual connections and layer normalization at each step.
+    </div>
+  </div>
+
+  <!-- ====== EMBEDDINGS PANEL ====== -->
+  <div class="panel" id="embeddings">
+    <div class="card">
+      <h2>Word Embedding Space (2D PCA Projection)</h2>
+      <p>Each dot is a word projected from high-dimensional embedding space. Words with similar meanings cluster together. Drag to pan, scroll to zoom.</p>
+    </div>
+    <div class="card">
+      <div class="emb-controls">
+        <label>Category:
+          <select id="emb-cat">
+            <option value="all">All</option>
+            <option value="animals">Animals</option>
+            <option value="royalty">Royalty</option>
+            <option value="places">Places</option>
+            <option value="tech">Technology</option>
+            <option value="feelings">Feelings</option>
+          </select>
+        </label>
+        <button id="emb-reset">Reset View</button>
+        <button id="emb-animate">Animate</button>
+      </div>
+      <canvas id="emb-canvas" width="760" height="440"></canvas>
+    </div>
+    <div class="info-box">
+      <strong>Embeddings:</strong> Each word is mapped to a ~4096-dimensional vector. Relationships are preserved: king − man + woman ≈ queen. PCA reduces these to 2D for visualization while preserving as much variance as possible.
+    </div>
+  </div>
+
+  <!-- ====== GENERATION PANEL ====== -->
+  <div class="panel" id="generation">
+    <div class="card">
+      <h2>Text Generation Simulation</h2>
+      <p>Simulate autoregressive token generation. Adjust sampling parameters and watch the model predict next tokens step by step.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Input & Output</h2>
+        <div class="gen-input-row">
+          <input id="gen-prompt" type="text" placeholder="Enter a prompt..." value="The future of artificial intelligence is" />
+          <button class="gen-btn" id="gen-start">Generate</button>
+        </div>
+        <div id="gen-output"></div>
+      </div>
+      <div class="card">
+        <h2>Sampling Parameters</h2>
+        <div class="slider-row">
+          <label>Temperature</label>
+          <input type="range" id="sl-temp" min="1" max="20" value="8" />
+          <span class="slider-val" id="sl-temp-val">0.8</span>
+        </div>
+        <div class="slider-row">
+          <label>Top-p (nucleus)</label>
+          <input type="range" id="sl-topp" min="1" max="100" value="90" />
+          <span class="slider-val" id="sl-topp-val">0.90</span>
+        </div>
+        <div class="slider-row">
+          <label>Top-k</label>
+          <input type="range" id="sl-topk" min="1" max="100" value="40" />
+          <span class="slider-val" id="sl-topk-val">40</span>
+        </div>
+        <div class="slider-row">
+          <label>Max tokens</label>
+          <input type="range" id="sl-maxtok" min="5" max="80" value="25" />
+          <span class="slider-val" id="sl-maxtok-val">25</span>
+        </div>
+        <div class="slider-row">
+          <label>Speed (ms/token)</label>
+          <input type="range" id="sl-speed" min="50" max="1000" value="250" step="50" />
+          <span class="slider-val" id="sl-speed-val">250</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="prob-bar-wrap">
+        <h3>Next token probabilities (top 10)</h3>
+        <div id="prob-bars"></div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Sampling strategies:</strong><br>
+      <b>Temperature</b> controls randomness (lower = more deterministic).<br>
+      <b>Top-p</b> samples from the smallest set of tokens whose cumulative probability exceeds p.<br>
+      <b>Top-k</b> restricts sampling to the k most likely tokens.
+    </div>
+  </div>
+
+  <!-- ====== ABOUT PANEL ====== -->
+  <div class="panel" id="about">
+    <div class="card">
+      <h2>About This Tool</h2>
+      <p>An interactive, self-contained HTML visualization of Large Language Model (LLM) internals. No server required — everything runs in your browser.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Features</h2>
+        <ul style="color:#8b949e;font-size:0.9rem;line-height:2;padding-left:20px;">
+          <li><strong style="color:#58a6ff">Tokenizer</strong> — BPE-style token splitting</li>
+          <li><strong style="color:#3fb950">Attention</strong> — Multi-head attention heatmap</li>
+          <li><strong style="color:#ffa657">Transformer</strong> — Interactive architecture diagram</li>
+          <li><strong style="color:#d2a8ff">Embeddings</strong> — 2D PCA word vector visualization</li>
+          <li><strong style="color:#f78166">Generation</strong> — Autoregressive sampling simulation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Key Concepts</h2>
+        <ul style="color:#8b949e;font-size:0.9rem;line-height:2;padding-left:20px;">
+          <li>Byte-Pair Encoding (BPE)</li>
+          <li>Scaled Dot-Product Attention</li>
+          <li>Multi-Head Attention</li>
+          <li>Positional Encoding</li>
+          <li>Feed-Forward Networks</li>
+          <li>Layer Normalization</li>
+          <li>Temperature / Top-p / Top-k sampling</li>
+          <li>Autoregressive generation</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Technical Notes</h2>
+      <p>This tool uses simulated data to illustrate concepts. Attention weights are generated using deterministic pseudo-random functions seeded by sentence and head index. Embeddings use pre-computed 2D positions that approximate PCA projections of real word2vec/GloVe vectors. Generation uses a curated Markov-like vocabulary with temperature-scaled sampling.</p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+function seededRand(seed) {
+  // Simple LCG pseudo-random
+  let s = seed | 0;
+  return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; };
+}
+
+function softmax(arr, temp = 1) {
+  const max = Math.max(...arr);
+  const exp = arr.map(x => Math.exp((x - max) / temp));
+  const sum = exp.reduce((a, b) => a + b, 0);
+  return exp.map(x => x / sum);
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+}
+
+function lerpColor(c1, c2, t) {
+  return c1.map((v, i) => Math.round(v + (c2[i] - v) * t));
+}
+
+function rgbStr(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+
+/* ================================================================
+   NAV
+   ================================================================ */
+document.querySelectorAll('#nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+    if (btn.dataset.panel === 'attention') drawAttention();
+    if (btn.dataset.panel === 'transformer') drawTransformer();
+    if (btn.dataset.panel === 'embeddings') drawEmbeddings();
+  });
+});
+
+/* ================================================================
+   TOKENIZER
+   ================================================================ */
+// Simplified BPE vocabulary simulation
+const BPE_VOCAB = [
+  'The', 'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been',
+  'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+  'could', 'should', 'may', 'might', 'shall', 'can', 'not', 'no', 'nor',
+  'and', 'or', 'but', 'so', 'yet', 'for', 'nor',
+  'quick', 'brown', 'fox', 'jumps', 'over', 'lazy', 'dog', 'cat', 'sat',
+  'mat', 'loves', 'playing', 'piano', 'every', 'day', 'bank', 'guarantee',
+  'deposits', 'time', 'flies', 'like', 'arrow', 'fruit', 'banana',
+  'future', 'artificial', 'intel', 'ligence', 'machine', 'learning',
+  'deep', 'neural', 'network', 'trans', 'former', 'attention', 'token',
+  'model', 'language', 'large', 'she', 'he', 'they', 'we', 'you', 'it',
+  'in', 'on', 'at', 'to', 'of', 'with', 'by', 'from', 'up', 'about',
+  'into', 'through', 'during', 'before', 'after', 'above', 'below',
+  'ation', 'ing', 'ness', 'ment', 'er', 'est', 'ly', 'ful', 'less',
+  'un', 're', 'pre', 'dis', 'mis', 'non', 'anti', 'inter', 'super',
+];
+
+function tokenize(text) {
+  const tokens = [];
+  let remaining = text;
+  while (remaining.length > 0) {
+    let matched = false;
+    // Try to match longest vocab entry
+    const sorted = BPE_VOCAB.slice().sort((a, b) => b.length - a.length);
+    for (const vocab of sorted) {
+      const re = new RegExp('^' + vocab.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      const m = remaining.match(re);
+      if (m) {
+        tokens.push(remaining.slice(0, m[0].length));
+        remaining = remaining.slice(m[0].length);
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      // take one char as unknown token
+      tokens.push(remaining[0]);
+      remaining = remaining.slice(1);
+    }
+  }
+  return tokens;
+}
+
+function renderTokens() {
+  const text = document.getElementById('tok-input').value;
+  const tokens = tokenize(text);
+  const display = document.getElementById('tok-display');
+  const ids = document.getElementById('tok-ids');
+  display.innerHTML = '';
+  const uniqueMap = {};
+  let uid = 0;
+  const tokenIds = tokens.map(t => {
+    if (uniqueMap[t] === undefined) uniqueMap[t] = uid++;
+    return uniqueMap[t];
+  });
+  tokens.forEach((t, i) => {
+    const span = document.createElement('span');
+    span.className = `token tc${tokenIds[i] % 8}`;
+    span.textContent = JSON.stringify(t).slice(1, -1); // escape control chars
+    span.title = `Token ID: ${tokenIds[i] + 100}`;
+    display.appendChild(span);
+  });
+  document.getElementById('tok-count').textContent = tokens.length;
+  document.getElementById('char-count').textContent = text.length;
+  document.getElementById('avg-chars').textContent = tokens.length ? (text.length / tokens.length).toFixed(2) : '0';
+  document.getElementById('uniq-count').textContent = Object.keys(uniqueMap).length;
+  ids.textContent = tokenIds.map((id, i) => `[${id + 100}]`).join(' ');
+}
+
+document.getElementById('tok-input').addEventListener('input', renderTokens);
+renderTokens();
+
+/* ================================================================
+   ATTENTION
+   ================================================================ */
+const ATTN_SENTENCES = [
+  ['The', 'cat', 'sat', 'on', 'the', 'mat'],
+  ['She', 'loves', 'playing', 'the', 'piano', 'every', 'day'],
+  ['The', 'bank', 'can', 'guarantee', 'deposits'],
+  ['Time', 'flies', 'like', 'an', 'arrow', 'fruit', 'flies', 'like', 'a', 'banana'],
+];
+
+function drawAttention() {
+  const sentIdx = +document.getElementById('attn-sentence').value;
+  const headIdx = +document.getElementById('attn-head').value;
+  const temp    = +document.getElementById('attn-temp').value / 10;
+
+  const words = ATTN_SENTENCES[sentIdx];
+  const n = words.length;
+
+  const cellSize = Math.min(56, Math.floor((Math.min(window.innerWidth - 100, 700)) / (n + 2)));
+  const margin = 60;
+  const canvasW = margin + n * cellSize + 10;
+  const canvasH = margin + n * cellSize + 10;
+
+  const canvas = document.getElementById('attn-canvas');
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvasW, canvasH);
+
+  const rng = seededRand(sentIdx * 37 + headIdx * 13);
+
+  // Generate raw scores and softmax per row
+  const scores = [];
+  for (let i = 0; i < n; i++) {
+    let row = [];
+    for (let j = 0; j < n; j++) {
+      // causal mask: can only attend to j <= i, slight bias toward nearby
+      const dist = Math.abs(i - j);
+      const base = j <= i ? rng() * 3 - dist * 0.3 : -10;
+      row.push(base);
+    }
+    row = softmax(row, temp);
+    scores.push(row);
+  }
+
+  const colBg  = hexToRgb('#0d1117');
+  const colLow = hexToRgb('#1a3a5c');
+  const colMid = hexToRgb('#1f6feb');
+  const colHi  = hexToRgb('#58a6ff');
+  const colMax = hexToRgb('#e6edf3');
+
+  function attnColor(v) {
+    if (v < 0.25) return rgbStr(lerpColor(colBg, colLow, v / 0.25));
+    if (v < 0.5)  return rgbStr(lerpColor(colLow, colMid, (v - 0.25) / 0.25));
+    if (v < 0.75) return rgbStr(lerpColor(colMid, colHi, (v - 0.5) / 0.25));
+    return rgbStr(lerpColor(colHi, colMax, (v - 0.75) / 0.25));
+  }
+
+  ctx.font = `${Math.max(10, cellSize * 0.3)}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // column labels (top)
+  ctx.fillStyle = '#8b949e';
+  words.forEach((w, j) => {
+    ctx.save();
+    ctx.translate(margin + j * cellSize + cellSize / 2, margin - 10);
+    ctx.rotate(-Math.PI / 5);
+    ctx.fillText(w, 0, 0);
+    ctx.restore();
+  });
+
+  // row labels + cells
+  words.forEach((w, i) => {
+    ctx.fillStyle = '#8b949e';
+    ctx.textAlign = 'right';
+    ctx.fillText(w, margin - 6, margin + i * cellSize + cellSize / 2);
+
+    scores[i].forEach((v, j) => {
+      const x = margin + j * cellSize;
+      const y = margin + i * cellSize;
+      ctx.fillStyle = attnColor(v);
+      ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+
+      // value text
+      if (cellSize > 32) {
+        const brightness = v > 0.5 ? 0 : 255;
+        ctx.fillStyle = `rgba(${brightness},${brightness},${brightness},0.7)`;
+        ctx.textAlign = 'center';
+        ctx.fillText((v * 100).toFixed(0) + '%', x + cellSize / 2, y + cellSize / 2);
+      }
+    });
+  });
+}
+
+document.getElementById('attn-sentence').addEventListener('change', drawAttention);
+document.getElementById('attn-head').addEventListener('change', drawAttention);
+document.getElementById('attn-temp').addEventListener('input', function() {
+  document.getElementById('attn-temp-val').textContent = (this.value / 10).toFixed(1);
+  drawAttention();
+});
+
+/* ================================================================
+   TRANSFORMER ARCHITECTURE
+   ================================================================ */
+const TF_BLOCKS = [
+  { id: 'input',    x: 300, y: 500, w: 160, h: 36, color: '#3fb950', label: 'Input Tokens', info: { title: 'Input Tokens', text: 'Raw text is split into tokens (sub-words) by the tokenizer. Each token is an integer index into the vocabulary (e.g., 50,257 tokens for GPT-2).' } },
+  { id: 'embed',    x: 300, y: 450, w: 160, h: 36, color: '#58a6ff', label: 'Token Embedding', info: { title: 'Token Embedding', text: 'Each token ID is mapped to a dense vector of dimension d_model (e.g., 768 for GPT-2 base). These learned embeddings encode semantic meaning.' } },
+  { id: 'posenc',   x: 300, y: 400, w: 160, h: 36, color: '#d2a8ff', label: 'Positional Encoding', info: { title: 'Positional Encoding', text: 'Since Transformers process all tokens in parallel, positional encodings inject sequence order information. Learned or sinusoidal encodings are added to the token embeddings.' } },
+  { id: 'add1',     x: 300, y: 355, w: 160, h: 28, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'Residual connections (x + sublayer(x)) help gradients flow. LayerNorm stabilizes training by normalizing across the feature dimension.' } },
+  { id: 'mha',      x: 300, y: 280, w: 160, h: 60, color: '#ffa657', label: 'Multi-Head\nAttention', info: { title: 'Multi-Head Self-Attention', text: 'Computes attention with H heads: for each head, linear projections Q=xW_Q, K=xW_K, V=xW_V, then Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Outputs are concatenated and projected.' } },
+  { id: 'add2',     x: 300, y: 242, w: 160, h: 26, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A second residual connection adds the pre-attention input back to the attention output, followed by LayerNorm.' } },
+  { id: 'ffn',      x: 300, y: 170, w: 160, h: 60, color: '#f78166', label: 'Feed-Forward\nNetwork (FFN)', info: { title: 'Feed-Forward Network', text: 'Two linear layers with a non-linearity: FFN(x) = max(0, xW₁+b₁)W₂+b₂. The inner dimension is 4× d_model. This is where most parameters reside.' } },
+  { id: 'add3',     x: 300, y: 132, w: 160, h: 26, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A third residual connection and LayerNorm after the FFN sublayer.' } },
+  { id: 'repeat',   x: 300, y: 88,  w: 160, h: 26, color: '#21262d', label: '× N Layers', info: { title: 'Stacked Layers', text: 'GPT-2 small: 12 layers. GPT-4: ~96 layers (est.). Each layer refines the token representations, with later layers encoding more abstract concepts.' } },
+  { id: 'lmhead',   x: 300, y: 44,  w: 160, h: 32, color: '#238636', label: 'LM Head → Logits', info: { title: 'Language Model Head', text: 'A final linear layer maps the d_model-dimensional output to vocabulary logits (shape: seq_len × vocab_size). Softmax converts these to probabilities for the next token.' } },
+];
+
+const tfCanvas = document.getElementById('tf-canvas');
+const tfCtx = tfCanvas.getContext('2d');
+let tfHover = null;
+
+function drawTransformer() {
+  const W = tfCanvas.width, H = tfCanvas.height;
+  tfCtx.clearRect(0, 0, W, H);
+
+  // draw connecting arrows
+  tfCtx.strokeStyle = '#30363d';
+  tfCtx.lineWidth = 2;
+  tfCtx.setLineDash([4, 3]);
+  for (let i = 1; i < TF_BLOCKS.length; i++) {
+    const prev = TF_BLOCKS[i - 1];
+    const cur  = TF_BLOCKS[i];
+    tfCtx.beginPath();
+    tfCtx.moveTo(prev.x + prev.w / 2, prev.y);
+    tfCtx.lineTo(cur.x + cur.w / 2, cur.y + cur.h);
+    tfCtx.stroke();
+  }
+  tfCtx.setLineDash([]);
+
+  // draw residual connections
+  tfCtx.strokeStyle = '#484f58';
+  tfCtx.lineWidth = 1.5;
+  [[1, 3], [4, 5], [6, 7]].forEach(([from, to]) => {
+    const a = TF_BLOCKS[from], b = TF_BLOCKS[to];
+    tfCtx.beginPath();
+    tfCtx.moveTo(a.x + a.w + 4, a.y + a.h / 2);
+    tfCtx.lineTo(a.x + a.w + 22, a.y + a.h / 2);
+    tfCtx.lineTo(b.x + b.w + 22, b.y + b.h / 2);
+    tfCtx.lineTo(b.x + b.w + 4, b.y + b.h / 2);
+    tfCtx.stroke();
+    // arrowhead
+    const ax = b.x + b.w + 4, ay = b.y + b.h / 2;
+    tfCtx.beginPath();
+    tfCtx.moveTo(ax, ay);
+    tfCtx.lineTo(ax + 7, ay - 4);
+    tfCtx.lineTo(ax + 7, ay + 4);
+    tfCtx.closePath();
+    tfCtx.fillStyle = '#484f58';
+    tfCtx.fill();
+  });
+
+  TF_BLOCKS.forEach(blk => {
+    const isHover = tfHover === blk.id;
+    const col = blk.color;
+    const alpha = isHover ? 'cc' : '33';
+    tfCtx.fillStyle = col + alpha;
+    tfCtx.strokeStyle = col;
+    tfCtx.lineWidth = isHover ? 2.5 : 1.5;
+    const r = 6;
+    tfCtx.beginPath();
+    tfCtx.roundRect(blk.x, blk.y, blk.w, blk.h, r);
+    tfCtx.fill();
+    tfCtx.stroke();
+
+    tfCtx.fillStyle = '#e6edf3';
+    tfCtx.font = '12px "Segoe UI", system-ui, sans-serif';
+    tfCtx.textAlign = 'center';
+    const lines = blk.label.split('\n');
+    const lineH = 15;
+    const totalH = lines.length * lineH;
+    lines.forEach((line, li) => {
+      tfCtx.fillText(line, blk.x + blk.w / 2, blk.y + blk.h / 2 - totalH / 2 + li * lineH + 7);
+    });
+  });
+
+  // dimension labels on the right
+  const dimLabels = [
+    { y: 338, text: 'd_model = 768' },
+    { y: 230, text: 'H heads, d_k = d_model/H' },
+    { y: 150, text: 'd_ff = 4 × d_model' },
+  ];
+  tfCtx.fillStyle = '#484f58';
+  tfCtx.font = '11px monospace';
+  tfCtx.textAlign = 'left';
+  dimLabels.forEach(l => {
+    tfCtx.fillText(l.text, 480, l.y);
+  });
+}
+
+tfCanvas.addEventListener('mousemove', e => {
+  const rect = tfCanvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  let found = null;
+  TF_BLOCKS.forEach(blk => {
+    if (mx >= blk.x && mx <= blk.x + blk.w && my >= blk.y && my <= blk.y + blk.h) found = blk.id;
+  });
+  if (found !== tfHover) {
+    tfHover = found;
+    tfCanvas.style.cursor = found ? 'pointer' : 'default';
+    drawTransformer();
+  }
+});
+
+tfCanvas.addEventListener('click', e => {
+  const rect = tfCanvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  TF_BLOCKS.forEach(blk => {
+    if (mx >= blk.x && mx <= blk.x + blk.w && my >= blk.y && my <= blk.y + blk.h) {
+      document.getElementById('tf-detail-title').textContent = blk.info.title;
+      document.getElementById('tf-detail-text').textContent  = blk.info.text;
+    }
+  });
+});
+
+/* ================================================================
+   EMBEDDINGS
+   ================================================================ */
+const EMB_WORDS = [
+  { word: 'cat',         cat: 'animals',  x2d: [0.12,  0.65] },
+  { word: 'dog',         cat: 'animals',  x2d: [0.18,  0.60] },
+  { word: 'lion',        cat: 'animals',  x2d: [0.08,  0.72] },
+  { word: 'wolf',        cat: 'animals',  x2d: [0.14,  0.78] },
+  { word: 'fish',        cat: 'animals',  x2d: [0.22,  0.55] },
+  { word: 'bird',        cat: 'animals',  x2d: [0.05,  0.58] },
+  { word: 'horse',       cat: 'animals',  x2d: [0.20,  0.68] },
+  { word: 'king',        cat: 'royalty',  x2d: [0.75,  0.20] },
+  { word: 'queen',       cat: 'royalty',  x2d: [0.80,  0.15] },
+  { word: 'prince',      cat: 'royalty',  x2d: [0.70,  0.25] },
+  { word: 'princess',    cat: 'royalty',  x2d: [0.76,  0.10] },
+  { word: 'man',         cat: 'royalty',  x2d: [0.60,  0.30] },
+  { word: 'woman',       cat: 'royalty',  x2d: [0.65,  0.22] },
+  { word: 'Paris',       cat: 'places',   x2d: [0.45,  0.80] },
+  { word: 'London',      cat: 'places',   x2d: [0.52,  0.85] },
+  { word: 'Tokyo',       cat: 'places',   x2d: [0.60,  0.78] },
+  { word: 'Berlin',      cat: 'places',   x2d: [0.48,  0.72] },
+  { word: 'France',      cat: 'places',   x2d: [0.40,  0.88] },
+  { word: 'England',     cat: 'places',   x2d: [0.56,  0.90] },
+  { word: 'AI',          cat: 'tech',     x2d: [0.82,  0.55] },
+  { word: 'GPU',         cat: 'tech',     x2d: [0.88,  0.60] },
+  { word: 'neural',      cat: 'tech',     x2d: [0.78,  0.48] },
+  { word: 'data',        cat: 'tech',     x2d: [0.84,  0.68] },
+  { word: 'model',       cat: 'tech',     x2d: [0.75,  0.65] },
+  { word: 'happy',       cat: 'feelings', x2d: [0.30,  0.25] },
+  { word: 'sad',         cat: 'feelings', x2d: [0.36,  0.30] },
+  { word: 'angry',       cat: 'feelings', x2d: [0.28,  0.35] },
+  { word: 'joyful',      cat: 'feelings', x2d: [0.24,  0.22] },
+  { word: 'fearful',     cat: 'feelings', x2d: [0.34,  0.18] },
+  { word: 'calm',        cat: 'feelings', x2d: [0.42,  0.28] },
+];
+
+const CAT_COLORS = {
+  animals:  '#3fb950',
+  royalty:  '#ffa657',
+  places:   '#58a6ff',
+  tech:     '#d2a8ff',
+  feelings: '#f78166',
+};
+
+let embView = { ox: 0, oy: 0, scale: 1 };
+let embDragging = false;
+let embDragStart = null;
+let embAnimFrame = null;
+
+function drawEmbeddings() {
+  const canvas = document.getElementById('emb-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const filterCat = document.getElementById('emb-cat').value;
+  ctx.clearRect(0, 0, W, H);
+
+  // grid
+  ctx.strokeStyle = '#21262d';
+  ctx.lineWidth = 1;
+  for (let gx = 0; gx < W; gx += 60) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+  for (let gy = 0; gy < H; gy += 60) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+
+  // axes labels
+  ctx.fillStyle = '#30363d';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('← PC1 →', W / 2, H - 6);
+  ctx.save();
+  ctx.translate(12, H / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('← PC2 →', 0, 0);
+  ctx.restore();
+
+  EMB_WORDS.forEach(w => {
+    if (filterCat !== 'all' && w.cat !== filterCat) return;
+    const sx = embView.ox + w.x2d[0] * W * embView.scale;
+    const sy = embView.oy + w.x2d[1] * H * embView.scale;
+
+    const col = CAT_COLORS[w.cat];
+    ctx.beginPath();
+    ctx.arc(sx, sy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = col + '55';
+    ctx.fill();
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#e6edf3';
+    ctx.font = '11px "Segoe UI", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(w.word, sx + 9, sy + 4);
+  });
+
+  // legend
+  let lx = 16, ly = 16;
+  Object.entries(CAT_COLORS).forEach(([cat, col]) => {
+    ctx.beginPath(); ctx.arc(lx + 6, ly + 6, 5, 0, Math.PI * 2);
+    ctx.fillStyle = col + '55'; ctx.fill();
+    ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = '#8b949e'; ctx.font = '11px "Segoe UI",sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(cat, lx + 16, ly + 10);
+    ly += 20;
+  });
+}
+
+document.getElementById('emb-cat').addEventListener('change', drawEmbeddings);
+document.getElementById('emb-reset').addEventListener('click', () => {
+  embView = { ox: 0, oy: 0, scale: 1 };
+  drawEmbeddings();
+});
+
+const embCanvas = document.getElementById('emb-canvas');
+embCanvas.addEventListener('mousedown', e => {
+  embDragging = true;
+  embDragStart = { x: e.clientX - embView.ox, y: e.clientY - embView.oy };
+});
+embCanvas.addEventListener('mousemove', e => {
+  if (!embDragging) return;
+  embView.ox = e.clientX - embDragStart.x;
+  embView.oy = e.clientY - embDragStart.y;
+  drawEmbeddings();
+});
+embCanvas.addEventListener('mouseup', () => { embDragging = false; });
+embCanvas.addEventListener('mouseleave', () => { embDragging = false; });
+embCanvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  embView.scale = Math.min(4, Math.max(0.3, embView.scale * delta));
+  drawEmbeddings();
+}, { passive: false });
+
+let embAnimRunning = false;
+document.getElementById('emb-animate').addEventListener('click', function() {
+  if (embAnimRunning) {
+    cancelAnimationFrame(embAnimFrame);
+    embAnimRunning = false;
+    this.textContent = 'Animate';
+    return;
+  }
+  embAnimRunning = true;
+  this.textContent = 'Stop';
+  let t = 0;
+  function step() {
+    t += 0.005;
+    embView.scale = 1 + 0.3 * Math.sin(t);
+    drawEmbeddings();
+    if (embAnimRunning) embAnimFrame = requestAnimationFrame(step);
+  }
+  step();
+});
+
+/* ================================================================
+   TEXT GENERATION
+   ================================================================ */
+const GEN_VOCAB = {
+  'The future of artificial intelligence is': [
+    { w: 'bright',       p: 0.18 },
+    { w: 'uncertain',    p: 0.15 },
+    { w: 'transforming', p: 0.12 },
+    { w: 'complex',      p: 0.10 },
+    { w: 'rapidly',      p: 0.09 },
+    { w: 'here',         p: 0.08 },
+    { w: 'exciting',     p: 0.07 },
+    { w: 'unknown',      p: 0.06 },
+    { w: 'limitless',    p: 0.05 },
+    { w: 'controversial',p: 0.04 },
+  ],
+  DEFAULT_NEXT: [
+    [
+      { w: 'and',      p: 0.14 }, { w: 'the',      p: 0.12 }, { w: 'will',    p: 0.11 },
+      { w: 'a',        p: 0.10 }, { w: 'in',       p: 0.09 }, { w: 'that',    p: 0.08 },
+      { w: 'can',      p: 0.07 }, { w: 'of',       p: 0.06 }, { w: 'with',    p: 0.05 },
+      { w: 'is',       p: 0.04 },
+    ],
+    [
+      { w: 'we',       p: 0.13 }, { w: 'humans',   p: 0.12 }, { w: 'models',  p: 0.10 },
+      { w: 'systems',  p: 0.09 }, { w: 'world',    p: 0.09 }, { w: 'society', p: 0.08 },
+      { w: 'continue', p: 0.07 }, { w: 'achieve',  p: 0.06 }, { w: 'create',  p: 0.06 },
+      { w: 'need',     p: 0.05 },
+    ],
+    [
+      { w: 'learning', p: 0.14 }, { w: 'capable',  p: 0.12 }, { w: 'more',    p: 0.11 },
+      { w: 'powerful', p: 0.10 }, { w: 'new',      p: 0.09 }, { w: 'faster',  p: 0.08 },
+      { w: 'smarter',  p: 0.07 }, { w: 'better',   p: 0.07 }, { w: 'complex', p: 0.06 },
+      { w: 'diverse',  p: 0.04 },
+    ],
+    [
+      { w: 'to',       p: 0.15 }, { w: 'every',    p: 0.11 }, { w: 'our',     p: 0.10 },
+      { w: 'many',     p: 0.09 }, { w: 'future',   p: 0.09 }, { w: 'various', p: 0.08 },
+      { w: 'their',    p: 0.07 }, { w: 'human',    p: 0.07 }, { w: 'great',   p: 0.06 },
+      { w: 'critical', p: 0.04 },
+    ],
+    [
+      { w: 'tasks',    p: 0.13 }, { w: 'problems', p: 0.12 }, { w: 'domains', p: 0.10 },
+      { w: 'fields',   p: 0.09 }, { w: 'aspects',  p: 0.09 }, { w: 'areas',   p: 0.08 },
+      { w: 'ways',     p: 0.07 }, { w: 'levels',   p: 0.07 }, { w: 'sectors', p: 0.06 },
+      { w: 'types',    p: 0.04 },
+    ],
+  ],
+};
+
+let genInterval = null;
+let genTokenCount = 0;
+let genCycle = 0;
+
+function sampleToken(probs, temp, topK, topP) {
+  // apply temperature
+  let scores = probs.map(t => ({ ...t, score: Math.log(t.p + 1e-10) / temp }));
+  // top-k
+  scores.sort((a, b) => b.score - a.score);
+  scores = scores.slice(0, topK);
+  // softmax
+  const maxS = Math.max(...scores.map(s => s.score));
+  scores.forEach(s => { s.exp = Math.exp(s.score - maxS); });
+  const sumExp = scores.reduce((acc, s) => acc + s.exp, 0);
+  scores.forEach(s => { s.prob = s.exp / sumExp; });
+  // top-p
+  let cumSum = 0;
+  const nucleus = [];
+  for (const s of scores) {
+    nucleus.push(s);
+    cumSum += s.prob;
+    if (cumSum >= topP) break;
+  }
+  // renormalize
+  const nucSum = nucleus.reduce((a, s) => a + s.prob, 0);
+  nucleus.forEach(s => { s.prob /= nucSum; });
+  // sample
+  let r = Math.random();
+  for (const s of nucleus) {
+    r -= s.prob;
+    if (r <= 0) return { word: s.w, probs: nucleus };
+  }
+  return { word: nucleus[nucleus.length - 1].w, probs: nucleus };
+}
+
+function updateProbBars(probs) {
+  const container = document.getElementById('prob-bars');
+  container.innerHTML = '';
+  const sorted = probs.slice().sort((a, b) => b.prob - a.prob).slice(0, 10);
+  const maxP = sorted[0]?.prob || 1;
+  sorted.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'prob-bar';
+    row.innerHTML = `
+      <span class="word">${item.w}</span>
+      <div class="bar-bg"><div class="bar-fill" style="width:${(item.prob/maxP*100).toFixed(1)}%"></div></div>
+      <span class="pct">${(item.prob*100).toFixed(1)}%</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function startGeneration() {
+  const btn = document.getElementById('gen-start');
+  if (genInterval) {
+    clearInterval(genInterval);
+    genInterval = null;
+    btn.textContent = 'Generate';
+    btn.disabled = false;
+    return;
+  }
+
+  const prompt = document.getElementById('gen-prompt').value;
+  const maxTok = +document.getElementById('sl-maxtok').value;
+  const temp   = +document.getElementById('sl-temp').value / 10;
+  const topP   = +document.getElementById('sl-topp').value / 100;
+  const topK   = +document.getElementById('sl-topk').value;
+  const speed  = +document.getElementById('sl-speed').value;
+
+  const output = document.getElementById('gen-output');
+  output.textContent = prompt + ' ';
+  genTokenCount = 0;
+  genCycle = 0;
+  btn.textContent = 'Stop';
+
+  genInterval = setInterval(() => {
+    if (genTokenCount >= maxTok) {
+      clearInterval(genInterval);
+      genInterval = null;
+      btn.textContent = 'Generate';
+      return;
+    }
+
+    // pick vocab list
+    let vocabKey = GEN_VOCAB[prompt];
+    let candidates;
+    if (vocabKey && genTokenCount < vocabKey.length) {
+      // use prompt-specific first tokens
+      candidates = vocabKey;
+    } else {
+      candidates = GEN_VOCAB.DEFAULT_NEXT[genCycle % GEN_VOCAB.DEFAULT_NEXT.length];
+      genCycle++;
+    }
+
+    const result = sampleToken(candidates, temp, topK, topP);
+    const span = document.createElement('span');
+    span.className = 'gen-token-new';
+    span.textContent = result.word + ' ';
+    output.appendChild(span);
+    output.scrollTop = output.scrollHeight;
+
+    updateProbBars(result.probs);
+    genTokenCount++;
+  }, speed);
+}
+
+document.getElementById('gen-start').addEventListener('click', startGeneration);
+
+// slider display updates
+[
+  ['sl-temp',   v => (v/10).toFixed(1), 'sl-temp-val'],
+  ['sl-topp',   v => (v/100).toFixed(2), 'sl-topp-val'],
+  ['sl-topk',   v => v,                 'sl-topk-val'],
+  ['sl-maxtok', v => v,                 'sl-maxtok-val'],
+  ['sl-speed',  v => v,                 'sl-speed-val'],
+].forEach(([id, fmt, valId]) => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', function() {
+    document.getElementById(valId).textContent = fmt(this.value);
+  });
+});
+
+/* ================================================================
+   INIT
+   ================================================================ */
+drawTransformer();
+</script>
+</body>
+</html>
