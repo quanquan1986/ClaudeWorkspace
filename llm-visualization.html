@@ -336,6 +336,62 @@
       padding: 4px 8px; border-radius: 6px; cursor: pointer;
     }
     .pe-controls select:focus, .pe-controls input:focus { outline: none; border-color: #58a6ff; }
+
+    /* ===================== TOOLTIP ===================== */
+    .attn-tooltip {
+      position: absolute; background: #21262d; border: 1px solid #30363d;
+      border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; color: #e6edf3;
+      pointer-events: none; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4); display: none;
+    }
+    #attn-canvas-wrap { position: relative; }
+
+    /* ===================== TOP-ATTENDED ===================== */
+    #attn-hover-info {
+      margin-top: 10px; min-height: 28px; font-size: 0.85rem; color: #8b949e;
+      padding: 8px 12px; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 6px; transition: opacity 0.2s;
+    }
+
+    /* ===================== ANALOGY ===================== */
+    .analogy-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .analogy-row select {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 5px 10px; border-radius: 6px; font-size: 0.85rem;
+    }
+    .analogy-row .op { font-size: 1.1rem; color: #58a6ff; font-weight: 700; }
+    .analogy-result {
+      margin-top: 8px; padding: 10px 14px; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 8px; font-size: 0.88rem; color: #3fb950;
+    }
+    .nn-list { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .nn-chip {
+      padding: 3px 10px; border-radius: 12px; font-size: 0.78rem;
+      background: #21262d; border: 1px solid #30363d; color: #8b949e; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nn-chip:hover { background: #30363d; color: #e6edf3; border-color: #58a6ff; }
+    .nn-chip .nn-dist { font-size: 0.7rem; color: #484f58; }
+
+    /* ===================== FFN PANEL ===================== */
+    .ffn-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .ffn-input-row label { font-size: 0.85rem; color: #8b949e; }
+    .ffn-input-row select, .ffn-input-row input[type=range] {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer;
+    }
+
+    /* ===================== KEYBOARD HINT ===================== */
+    .kbd-hint { font-size: 0.75rem; color: #484f58; margin-left: auto; }
+    kbd { background: #21262d; border: 1px solid #484f58; border-radius: 3px; padding: 1px 5px; font-family: monospace; }
+
+    /* ===================== COMPARE TOGGLE ===================== */
+    #train-compare {
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s; margin-left: 8px;
+    }
+    #train-compare.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
   </style>
 </head>
 <body>
@@ -357,6 +413,8 @@
   <button data-panel="posenc">Pos. Encoding</button>
   <button data-panel="sdpa">Scaled Attn</button>
   <button data-panel="training">Training</button>
+  <button data-panel="ffn">FFN Neurons</button>
+  <span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> switch panels</span>
 </nav>
 
 <main>
@@ -431,7 +489,9 @@
       </div>
       <div id="attn-canvas-wrap">
         <canvas id="attn-canvas"></canvas>
+        <div class="attn-tooltip" id="attn-tooltip"></div>
       </div>
+      <div id="attn-hover-info">Hover over a cell to see attention details.</div>
       <div class="legend" style="margin-top:12px;">
         <div class="legend-item"><div class="legend-dot" style="background:#0d1117;border:1px solid #30363d"></div> No attention</div>
         <div class="legend-item"><div class="legend-dot" style="background:#1a3a5c"></div> Low</div>
@@ -485,6 +545,20 @@
         <button id="emb-animate">Animate</button>
       </div>
       <canvas id="emb-canvas" width="760" height="440"></canvas>
+    </div>
+    <div class="card">
+      <h2>Word Analogy Explorer  <span style="font-size:0.8rem;color:#484f58;font-weight:400;">A &minus; B + C &asymp; ?</span></h2>
+      <div class="analogy-row">
+        <select id="ana-a"><option>king</option><option>Paris</option><option>cat</option><option>happy</option><option>man</option><option>dog</option><option>AI</option><option>France</option></select>
+        <span class="op">&minus;</span>
+        <select id="ana-b"><option>man</option><option>France</option><option>dog</option><option>sad</option><option>woman</option><option>cat</option><option>GPU</option><option>England</option></select>
+        <span class="op">+</span>
+        <select id="ana-c"><option>woman</option><option>England</option><option>wolf</option><option>joyful</option><option>king</option><option>lion</option><option>neural</option><option>Tokyo</option></select>
+        <button id="ana-run" style="background:#1f6feb;border:none;color:#fff;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Compute</button>
+      </div>
+      <div class="analogy-result" id="ana-result">Click Compute to find the nearest word.</div>
+      <p style="font-size:0.8rem;color:#484f58;margin-top:8px;">Computed in 2D projected space. Click any word in the canvas to see its nearest neighbors.</p>
+      <div class="nn-list" id="nn-list"></div>
     </div>
     <div class="info-box">
       <strong>Embeddings:</strong> Each word is mapped to a ~4096-dimensional vector. Relationships are preserved: king &minus; man + woman &asymp; queen. PCA reduces these to 2D for visualization while preserving as much variance as possible.
