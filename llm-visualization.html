@@ -647,7 +647,8 @@
           <li><strong style="color:#f78166">Generation</strong> &mdash; Autoregressive sampling simulation</li>
           <li><strong style="color:#79c0ff">Pos. Encoding</strong> &mdash; Sinusoidal positional encoding heatmap &amp; curves</li>
           <li><strong style="color:#56d364">Scaled Attn</strong> &mdash; Step-by-step scaled dot-product attention walkthrough</li>
-          <li><strong style="color:#ffa657">Training</strong> &mdash; Pre-training, SFT, and RLHF loss/reward curves</li>
+          <li><strong style="color:#ffa657">Training</strong> &mdash; Pre-training, SFT, and RLHF loss/reward curves with compare overlay</li>
+          <li><strong style="color:#f78166">FFN Neurons</strong> &mdash; Feed-forward layer neuron activations per token and layer</li>
         </ul>
       </div>
       <div class="card">
@@ -743,10 +744,13 @@
       <p>Modern LLMs are built through three distinct training phases. Click each phase to see its loss/reward curve and learn what happens at each stage.</p>
     </div>
     <div class="card">
-      <div class="phase-tabs">
-        <button class="phase-tab active" data-phase="pretrain">&#x2460; Pre-training</button>
-        <button class="phase-tab" data-phase="sft">&#x2461; Supervised Fine-tuning (SFT)</button>
-        <button class="phase-tab" data-phase="rlhf">&#x2462; RLHF / DPO</button>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:14px;">
+        <div class="phase-tabs" style="margin-bottom:0;">
+          <button class="phase-tab active" data-phase="pretrain">&#x2460; Pre-training</button>
+          <button class="phase-tab" data-phase="sft">&#x2461; Supervised Fine-tuning (SFT)</button>
+          <button class="phase-tab" data-phase="rlhf">&#x2462; RLHF / DPO</button>
+        </div>
+        <button id="train-compare">Compare All</button>
       </div>
       <canvas id="train-canvas" width="760" height="300" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
     </div>
@@ -776,6 +780,59 @@
     <div class="info-box">
       <strong>RLHF (Reinforcement Learning from Human Feedback):</strong> Human raters compare pairs of model outputs and mark which is better. A reward model is trained on these preferences. PPO then optimizes the policy to maximize reward while a KL penalty prevents it from drifting too far from the SFT baseline. DPO achieves a similar result without a separate reward model.<br><br>
       <strong>Key insight:</strong> Each stage builds on the previous &mdash; pre-training provides general knowledge, SFT teaches the format, RLHF aligns values.
+    </div>
+  </div>
+
+  <!-- ====== FFN NEURONS PANEL ====== -->
+  <div class="panel" id="ffn">
+    <div class="card">
+      <h2>Feed-Forward Network (FFN) Neurons</h2>
+      <p>Each Transformer layer contains a 2-layer FFN: FFN(x) = max(0, xW&#x2081;+b&#x2081;)W&#x2082;+b&#x2082;. The inner layer expands to 4&times; d_model. Hover over neurons to see their activation for each input token.</p>
+    </div>
+    <div class="card">
+      <div class="ffn-input-row">
+        <label>Input token:
+          <select id="ffn-token">
+            <option value="0">cat</option>
+            <option value="1">sat</option>
+            <option value="2">mat</option>
+            <option value="3">king</option>
+            <option value="4">queen</option>
+            <option value="5">neural</option>
+            <option value="6">model</option>
+          </select>
+        </label>
+        <label>Layer:
+          <select id="ffn-layer">
+            <option value="0">Layer 1 (early)</option>
+            <option value="1">Layer 6 (middle)</option>
+            <option value="2">Layer 12 (late)</option>
+          </select>
+        </label>
+        <label>Neurons shown: <input type="range" id="ffn-n" min="8" max="32" value="16" step="4" /> <span id="ffn-n-val">16</span></label>
+      </div>
+      <canvas id="ffn-canvas" width="760" height="320" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <div id="ffn-hover-info" style="margin-top:8px;min-height:24px;font-size:0.82rem;color:#8b949e;padding:6px 10px;background:#0d1117;border:1px solid #30363d;border-radius:6px;">
+        Hover a neuron bar to see its pre/post-activation value.
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Architecture</h2>
+        <ul style="color:#8b949e;font-size:0.88rem;line-height:2;padding-left:18px;">
+          <li><strong style="color:#58a6ff">Linear W&#x2081;</strong>: d_model &rarr; 4&times;d_model &nbsp;(expand)</li>
+          <li><strong style="color:#3fb950">ReLU / GeLU</strong>: non-linear activation</li>
+          <li><strong style="color:#ffa657">Linear W&#x2082;</strong>: 4&times;d_model &rarr; d_model &nbsp;(project)</li>
+          <li><strong style="color:#d2a8ff">Residual</strong>: output + input (skip connection)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Neuron Specialization</h2>
+        <p style="font-size:0.88rem;color:#8b949e;line-height:1.7;">Early layers activate on syntactic features (punctuation, word position). Middle layers encode semantic concepts (animal-ness, royalty). Late layers encode task-specific patterns used for prediction. Each neuron acts as a &ldquo;feature detector&rdquo;.</p>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Parameter count:</strong> In GPT-2 base (d_model=768), each FFN layer has 2&times;768&times;3072 = 4.7M parameters. With 12 layers, FFN accounts for ~56M of 117M total parameters &mdash; nearly half the model.
     </div>
   </div>
 
@@ -1018,6 +1075,68 @@ document.getElementById('attn-temp').addEventListener('input', function() {
   document.getElementById('attn-temp-val').textContent = (this.value / 10).toFixed(1);
   drawAttention();
 });
+
+/* ================================================================
+   ATTENTION HOVER
+   ================================================================ */
+(function() {
+  const wrap = document.getElementById('attn-canvas-wrap');
+  const tooltip = document.getElementById('attn-tooltip');
+  const hoverInfo = document.getElementById('attn-hover-info');
+
+  document.getElementById('attn-canvas').addEventListener('mousemove', function(e) {
+    const rect = this.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const sentIdx = +document.getElementById('attn-sentence').value;
+    const headIdx = +document.getElementById('attn-head').value;
+    const temp    = +document.getElementById('attn-temp').value / 10;
+    const words   = ATTN_SENTENCES[sentIdx];
+    const n = words.length;
+    const cellSize = Math.min(56, Math.floor((Math.min(window.innerWidth - 100, 700)) / (n + 2)));
+    const margin = 60;
+
+    const col = Math.floor((mx - margin) / cellSize);
+    const row = Math.floor((my - margin) / cellSize);
+
+    if (col < 0 || col >= n || row < 0 || row >= n) {
+      tooltip.style.display = 'none';
+      hoverInfo.textContent = 'Hover over a cell to see attention details.';
+      return;
+    }
+
+    // re-compute scores for this state
+    const rng = seededRand(sentIdx * 37 + headIdx * 13);
+    const scores = [];
+    for (let i = 0; i < n; i++) {
+      let r = [];
+      for (let j = 0; j < n; j++) {
+        const dist = Math.abs(i - j);
+        const base = j <= i ? rng() * 3 - dist * 0.3 : -10;
+        r.push(base);
+      }
+      scores.push(softmax(r, temp));
+    }
+
+    const val = scores[row][col];
+    tooltip.style.display = 'block';
+    tooltip.style.left = (mx + 12) + 'px';
+    tooltip.style.top  = (my - 28) + 'px';
+    tooltip.textContent = '"' + words[row] + '" → "' + words[col] + '": ' + (val * 100).toFixed(1) + '%';
+
+    // top attended for this row
+    const rowScores = scores[row].map((v, j) => ({ word: words[j], v }))
+      .sort((a, b) => b.v - a.v).slice(0, 3);
+    hoverInfo.innerHTML = '<strong style="color:#58a6ff">"' + words[row] + '"</strong> top attention → ' +
+      rowScores.map(s => '"' + s.word + '" <strong style="color:#3fb950">' + (s.v * 100).toFixed(1) + '%</strong>').join('  ·  ');
+  });
+
+  document.getElementById('attn-canvas').addEventListener('mouseleave', function() {
+    tooltip.style.display = 'none';
+    hoverInfo.textContent = 'Hover over a cell to see attention details.';
+  });
+})();
 
 /* ================================================================
    TRANSFORMER ARCHITECTURE
@@ -1295,6 +1414,70 @@ document.getElementById('emb-animate').addEventListener('click', function() {
     if (embAnimRunning) embAnimFrame = requestAnimationFrame(step);
   }
   step();
+});
+
+/* ================================================================
+   EMBEDDINGS ANALOGY + NEAREST NEIGHBOR
+   ================================================================ */
+function embDist(a, b) {
+  return Math.sqrt((a.x2d[0]-b.x2d[0])**2 + (a.x2d[1]-b.x2d[1])**2);
+}
+
+function analogyVector(aW, bW, cW) {
+  const a = EMB_WORDS.find(w => w.word === aW);
+  const b = EMB_WORDS.find(w => w.word === bW);
+  const c = EMB_WORDS.find(w => w.word === cW);
+  if (!a || !b || !c) return null;
+  return { x2d: [a.x2d[0] - b.x2d[0] + c.x2d[0], a.x2d[1] - b.x2d[1] + c.x2d[1]] };
+}
+
+function nearestNeighbors(target, exclude, k) {
+  return EMB_WORDS
+    .filter(w => !exclude.includes(w.word))
+    .map(w => ({ word: w.word, dist: embDist(target, w) }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, k);
+}
+
+document.getElementById('ana-run').addEventListener('click', () => {
+  const aW = document.getElementById('ana-a').value;
+  const bW = document.getElementById('ana-b').value;
+  const cW = document.getElementById('ana-c').value;
+  const result = analogyVector(aW, bW, cW);
+  if (!result) { document.getElementById('ana-result').textContent = 'Word not found in dataset.'; return; }
+  const nn = nearestNeighbors(result, [aW, bW, cW], 5);
+  document.getElementById('ana-result').innerHTML =
+    '<strong style="color:#58a6ff">' + aW + '</strong> &minus; <strong style="color:#f78166">' + bW +
+    '</strong> + <strong style="color:#3fb950">' + cW + '</strong> &asymp; ' +
+    nn.slice(0, 3).map((n, i) => '<strong style="color:' + ['#ffa657','#d2a8ff','#79c0ff'][i] + '">' + n.word + '</strong> (' + n.dist.toFixed(3) + ')').join(',  ');
+});
+
+document.getElementById('emb-canvas').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const W = this.width, H = this.height;
+  let closest = null, minD = Infinity;
+  EMB_WORDS.forEach(w => {
+    const sx = embView.ox + w.x2d[0] * W * embView.scale;
+    const sy = embView.oy + w.x2d[1] * H * embView.scale;
+    const d = Math.hypot(sx - mx, sy - my);
+    if (d < minD) { minD = d; closest = w; }
+  });
+  if (!closest || minD > 30) { document.getElementById('nn-list').innerHTML = ''; return; }
+  const nn = nearestNeighbors(closest, [closest.word], 8);
+  const nnList = document.getElementById('nn-list');
+  nnList.innerHTML = '<span style="font-size:0.82rem;color:#8b949e;">Neighbors of <strong style="color:#58a6ff">' + closest.word + '</strong>:</span> ';
+  nn.forEach(n => {
+    const chip = document.createElement('span');
+    chip.className = 'nn-chip';
+    chip.innerHTML = n.word + ' <span class="nn-dist">' + n.dist.toFixed(3) + '</span>';
+    chip.addEventListener('click', () => {
+      const w = EMB_WORDS.find(x => x.word === n.word);
+      if (w) { embView.ox = 0; embView.oy = 0; embView.scale = 1; drawEmbeddings(); }
+    });
+    nnList.appendChild(chip);
+  });
 });
 
 /* ================================================================
@@ -1897,6 +2080,129 @@ document.getElementById('sdpa-next').addEventListener('click', () => {
 });
 
 /* ================================================================
+   FFN NEURONS
+   ================================================================ */
+const FFN_TOKEN_NAMES = ['cat', 'sat', 'mat', 'king', 'queen', 'neural', 'model'];
+const FFN_NEURON_LABELS = [
+  'syntax-pos', 'verb-det', 'noun-anim', 'article', 'prep-obj',
+  'semantic-ref', 'royalty', 'emotion', 'tech-ai', 'motion',
+  'abstract', 'concrete', 'plural', 'temporal', 'spatial', 'causal',
+  'subject', 'object', 'modifier', 'connector', 'negation', 'intensifier',
+  'entity', 'action', 'state', 'relation', 'number', 'context',
+  'memory', 'predict', 'encode', 'decode',
+];
+
+function ffnActivation(tokenIdx, layerIdx, neuronIdx) {
+  // Seeded deterministic "activation" – mimics real patterns
+  const rng = seededRand(tokenIdx * 1000 + layerIdx * 100 + neuronIdx);
+  // Early layers: sparse, sparse pattern. Late: denser activations
+  const sparsity = [0.6, 0.45, 0.35][layerIdx];
+  const raw = rng() * 2 - 1 + (rng() > sparsity ? rng() * 1.5 : 0);
+  return Math.max(0, raw); // ReLU
+}
+
+function drawFFN() {
+  const canvas = document.getElementById('ffn-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const tokenIdx = +document.getElementById('ffn-token').value;
+  const layerIdx = +document.getElementById('ffn-layer').value;
+  const nNeurons = +document.getElementById('ffn-n').value;
+
+  const padL = 110, padR = 20, padT = 40, padB = 30;
+  const chartW = W - padL - padR;
+  const barH   = (H - padT - padB) / nNeurons - 2;
+
+  // Column header
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = 'bold 12px "Segoe UI",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('FFN Hidden-Layer Neuron Activations — Token: "' + FFN_TOKEN_NAMES[tokenIdx] + '"', padL + chartW / 2, 18);
+
+  const maxAct = 2.0;
+  for (let ni = 0; ni < nNeurons; ni++) {
+    const act = ffnActivation(tokenIdx, layerIdx, ni);
+    const y   = padT + ni * (barH + 2);
+    const barW = Math.max(0, (act / maxAct) * chartW);
+    const hue  = act < 0.3 ? 0.15 : act < 1.0 ? 0.55 : 0.33;
+    const saturation = 0.6 + act * 0.2;
+    // Use pre-defined color palette
+    const color = act < 0.01 ? '#21262d' : act < 0.5 ? '#1a3a5c' : act < 1.2 ? '#1f6feb' : '#3fb950';
+
+    // Bar background
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(padL, y, chartW, barH);
+
+    // Bar fill
+    ctx.fillStyle = color;
+    const grad = ctx.createLinearGradient(padL, 0, padL + barW, 0);
+    grad.addColorStop(0, color + 'cc');
+    grad.addColorStop(1, color);
+    ctx.fillStyle = grad;
+    ctx.fillRect(padL, y, barW, barH);
+
+    // Neuron label
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    const label = FFN_NEURON_LABELS[ni % FFN_NEURON_LABELS.length];
+    ctx.fillText('#' + ni + ' ' + label, padL - 5, y + barH / 2 + 3);
+
+    // Value label
+    if (act > 0.05) {
+      ctx.fillStyle = '#e6edf3';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(act.toFixed(3), padL + barW + 4, y + barH / 2 + 3);
+    }
+  }
+
+  // X axis ticks
+  ctx.fillStyle = '#484f58';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  [0, 0.5, 1.0, 1.5, 2.0].forEach(v => {
+    const x = padL + (v / maxAct) * chartW;
+    ctx.fillText(v.toFixed(1), x, H - 8);
+    ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, H - padB); ctx.stroke();
+  });
+}
+
+document.getElementById('ffn-token').addEventListener('change', drawFFN);
+document.getElementById('ffn-layer').addEventListener('change', drawFFN);
+document.getElementById('ffn-n').addEventListener('input', function() {
+  document.getElementById('ffn-n-val').textContent = this.value;
+  drawFFN();
+});
+
+document.getElementById('ffn-canvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const my = e.clientY - rect.top;
+  const nNeurons = +document.getElementById('ffn-n').value;
+  const padT = 40, padB = 30;
+  const barH = (this.height - padT - padB) / nNeurons - 2;
+  const ni = Math.floor((my - padT) / (barH + 2));
+  if (ni < 0 || ni >= nNeurons) { document.getElementById('ffn-hover-info').textContent = 'Hover a neuron bar to see its pre/post-activation value.'; return; }
+  const tokenIdx = +document.getElementById('ffn-token').value;
+  const layerIdx = +document.getElementById('ffn-layer').value;
+  const act = ffnActivation(tokenIdx, layerIdx, ni);
+  const preAct = act - 0.18; // approximate pre-activation (before ReLU)
+  const label = FFN_NEURON_LABELS[ni % FFN_NEURON_LABELS.length];
+  document.getElementById('ffn-hover-info').innerHTML =
+    'Neuron <strong style="color:#58a6ff">#' + ni + ' (' + label + ')</strong> — ' +
+    'Pre-ReLU: <strong style="color:#ffa657">' + preAct.toFixed(4) + '</strong>  ' +
+    'Post-ReLU: <strong style="color:#3fb950">' + act.toFixed(4) + '</strong>  ' +
+    (act < 0.01 ? '<span style="color:#484f58">🔴 Dead neuron (ReLU=0)</span>' : '<span style="color:#3fb950">🟢 Active</span>');
+});
+
+// Register FFN in nav
+document.querySelector('[data-panel="ffn"]').addEventListener = document.querySelector('[data-panel="ffn"]').addEventListener;
+
+/* ================================================================
    TRAINING DYNAMICS
    ================================================================ */
 function genLoss(steps, start, end, noiseAmp, seed) {
@@ -1946,6 +2252,7 @@ const TRAIN_PHASES = {
 let currentPhase = 'pretrain';
 
 function drawTraining() {
+  if (trainCompareMode) { drawTrainingCompare(); return; }
   const canvas = document.getElementById('train-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -2040,8 +2347,72 @@ function drawTraining() {
   ctx.fillText(title, padL, 20);
 }
 
+let trainCompareMode = false;
+
+document.getElementById('train-compare').addEventListener('click', function() {
+  trainCompareMode = !trainCompareMode;
+  this.classList.toggle('active', trainCompareMode);
+  this.textContent = trainCompareMode ? 'Single Phase' : 'Compare All';
+  drawTraining();
+});
+
+function drawTrainingCompare() {
+  const canvas = document.getElementById('train-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const padL = 58, padR = 20, padT = 32, padB = 44;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  // Normalize each series to 0-1 range for overlay comparison
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = 'bold 13px "Segoe UI",sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('All Phases — Normalized Progress (0=start, 1=end)', padL, 20);
+
+  // Grid
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + chartH * i / 5;
+    ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+    ctx.fillText((1 - i / 5).toFixed(1), padL - 5, y + 4);
+  }
+
+  const phaseOrder = ['pretrain', 'sft', 'rlhf'];
+  phaseOrder.forEach(key => {
+    const ph = TRAIN_PHASES[key];
+    const series = ph.series;
+    const yMin = Math.min(...series), yMax = Math.max(...series);
+    const norm = v => (ph.isReward ? v : 1 - (v - yMin) / (yMax - yMin));
+
+    ctx.beginPath();
+    series.forEach((v, i) => {
+      const x = padL + chartW * i / (series.length - 1);
+      const y = padT + chartH * (1 - norm(v));
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = ph.color; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Label at end
+    const last = series[series.length - 1];
+    const ly = padT + chartH * (1 - norm(last));
+    ctx.fillStyle = ph.color; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ph.title, padL + chartW + 4, ly + 4);
+  });
+
+  ctx.fillStyle = '#8b949e'; ctx.font = '12px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Relative Step Progress →', padL + chartW / 2, H - 4);
+}
+
 document.querySelectorAll('.phase-tab').forEach(btn => {
   btn.addEventListener('click', () => {
+    trainCompareMode = false;
+    document.getElementById('train-compare').classList.remove('active');
+    document.getElementById('train-compare').textContent = 'Compare All';
     currentPhase = btn.dataset.phase;
     document.querySelectorAll('.phase-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -2053,8 +2424,31 @@ document.querySelectorAll('.phase-tab').forEach(btn => {
 });
 
 /* ================================================================
+   KEYBOARD NAVIGATION
+   ================================================================ */
+const NAV_PANELS = ['tokenizer','attention','transformer','embeddings','generation','about','posenc','sdpa','training','ffn'];
+document.addEventListener('keydown', e => {
+  // Don't intercept when typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  const btns = Array.from(document.querySelectorAll('#nav button[data-panel]'));
+  const active = btns.findIndex(b => b.classList.contains('active'));
+  if (e.key === 'ArrowRight' && active < btns.length - 1) {
+    btns[active + 1].click(); e.preventDefault();
+  } else if (e.key === 'ArrowLeft' && active > 0) {
+    btns[active - 1].click(); e.preventDefault();
+  } else if (e.key === 'ArrowRight' && document.getElementById('sdpa').classList.contains('active')) {
+    document.getElementById('sdpa-next').click();
+  } else if (e.key === 'ArrowLeft' && document.getElementById('sdpa').classList.contains('active')) {
+    document.getElementById('sdpa-prev').click();
+  }
+});
+
+/* ================================================================
    INIT
    ================================================================ */
+// Wire FFN panel to nav
+document.querySelector('[data-panel="ffn"]').addEventListener('click', drawFFN);
+
 drawTransformer();
 </script>
 </body>
