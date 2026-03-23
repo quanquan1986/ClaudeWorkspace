@@ -392,6 +392,56 @@
       transition: all 0.15s; margin-left: 8px;
     }
     #train-compare.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+    /* ===================== BPE TABS ===================== */
+    .bpe-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .bpe-tab {
+      padding: 5px 14px; border-radius: 6px; border: 1px solid #30363d;
+      background: #21262d; color: #8b949e; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    .bpe-tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    .bpe-step-counter { font-size: 0.82rem; color: #58a6ff; font-weight: 700; }
+    .bpe-corpus-display {
+      font-family: monospace; font-size: 0.88rem; line-height: 2.2;
+      padding: 12px; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; min-height: 80px; word-break: break-all;
+    }
+    .bpe-pair-highlight { color: #ffa657; background: #3d2700; border-radius: 3px; padding: 1px 3px; }
+    .bpe-vocab-display {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+      padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    }
+    .bpe-vocab-token {
+      padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-family: monospace;
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+    }
+    .bpe-vocab-token.new { border-color: #3fb950; color: #3fb950; background: #163020; }
+
+    /* ===================== CAUSAL MASK TOGGLE ===================== */
+    #attn-causal-btn {
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    #attn-causal-btn.active { background: #f78166; border-color: #f78166; color: #fff; }
+
+    /* ===================== BEAM SEARCH ===================== */
+    #beam-canvas-wrap {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      padding: 12px; margin-top: 14px; overflow-x: auto;
+    }
+    #beam-canvas { display: block; }
+    .beam-width-row select {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 4px 8px; border-radius: 6px;
+    }
+
+    /* ===================== GRADIENT FLOW ===================== */
+    #grad-canvas { display: block; cursor: default; }
+
+    /* ===================== LAYERNORM ===================== */
+    #ln-canvas, #ln-compare { cursor: default; }
   </style>
 </head>
 <body>
@@ -414,6 +464,7 @@
   <button data-panel="sdpa">Scaled Attn</button>
   <button data-panel="training">Training</button>
   <button data-panel="ffn">FFN Neurons</button>
+  <button data-panel="layernorm">LayerNorm</button>
   <span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> switch panels</span>
 </nav>
 
@@ -423,27 +474,55 @@
   <div class="panel active" id="tokenizer">
     <div class="card">
       <h2>Tokenizer &mdash; BPE Simulation</h2>
-      <p>Type any text below to see how a BPE-style tokenizer splits it into sub-word tokens. Each color represents a distinct token.</p>
+      <p>Explore how Byte-Pair Encoding works: from raw characters to a learned vocabulary.</p>
     </div>
     <div class="card">
-      <div class="example-btns">
-        <button class="example-btn" data-text="The quick brown fox jumps over the lazy dog.">English</button>
-        <button class="example-btn" data-text="def fibonacci(n): return n if n &lt;= 1 else fibonacci(n-1)+fibonacci(n-2)">Code</button>
-        <button class="example-btn" data-text="GPT-4 has ~1.76 trillion parameters and a 128k context window.">AI Facts</button>
-        <button class="example-btn" data-text="The price is $1,234.56 — 40% off! Date: 2024-01-15">Numbers</button>
-        <button class="example-btn" data-text="Transformer architecture enables parallel sequence processing.">Technical</button>
-        <button class="example-btn" data-text="Hello! Bonjour! Hola! Ciao!">Multilingual</button>
+      <div class="bpe-tabs">
+        <button class="bpe-tab active" id="bpe-tab-tokenize">Tokenize</button>
+        <button class="bpe-tab" id="bpe-tab-process">BPE Process</button>
       </div>
-      <textarea id="tok-input" placeholder="Type something like: The quick brown fox jumps over the lazy dog">The quick brown fox jumps over the lazy dog.</textarea>
-      <div class="token-display" id="tok-display"></div>
-      <div class="tok-stats">
-        <div class="tok-stat">Tokens: <span id="tok-count">0</span></div>
-        <div class="tok-stat">Characters: <span id="char-count">0</span></div>
-        <div class="tok-stat">Avg chars/token: <span id="avg-chars">0</span></div>
-        <div class="tok-stat">Unique tokens: <span id="uniq-count">0</span></div>
+
+      <!-- Tab 1: existing tokenize UI -->
+      <div id="bpe-pane-tokenize">
+        <div class="example-btns">
+          <button class="example-btn" data-text="The quick brown fox jumps over the lazy dog.">English</button>
+          <button class="example-btn" data-text="def fibonacci(n): return n if n &lt;= 1 else fibonacci(n-1)+fibonacci(n-2)">Code</button>
+          <button class="example-btn" data-text="GPT-4 has ~1.76 trillion parameters and a 128k context window.">AI Facts</button>
+          <button class="example-btn" data-text="The price is $1,234.56 — 40% off! Date: 2024-01-15">Numbers</button>
+          <button class="example-btn" data-text="Transformer architecture enables parallel sequence processing.">Technical</button>
+          <button class="example-btn" data-text="Hello! Bonjour! Hola! Ciao!">Multilingual</button>
+        </div>
+        <textarea id="tok-input" placeholder="Type something like: The quick brown fox jumps over the lazy dog">The quick brown fox jumps over the lazy dog.</textarea>
+        <div class="token-display" id="tok-display"></div>
+        <div class="tok-stats">
+          <div class="tok-stat">Tokens: <span id="tok-count">0</span></div>
+          <div class="tok-stat">Characters: <span id="char-count">0</span></div>
+          <div class="tok-stat">Avg chars/token: <span id="avg-chars">0</span></div>
+          <div class="tok-stat">Unique tokens: <span id="uniq-count">0</span></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: BPE Process Animator -->
+      <div id="bpe-pane-process" style="display:none;">
+        <div class="info-box" style="margin-bottom:12px;">
+          Corpus: <strong style="color:#58a6ff">"low lower newest widest"</strong> &mdash; watch BPE build its vocabulary step by step from individual characters.
+        </div>
+        <div class="step-nav">
+          <button id="bpe-reset">Reset</button>
+          <button id="bpe-next">Next Merge &rarr;</button>
+          <span class="bpe-step-counter" id="bpe-step-counter">Step 0 / 13</span>
+        </div>
+        <div style="margin-bottom:8px;font-size:0.85rem;color:#8b949e;" id="bpe-desc">
+          Initial state: each word split into individual characters. End-of-word marker added.
+        </div>
+        <h3 style="font-size:0.85rem;color:#8b949e;margin-bottom:4px;">Current Corpus State</h3>
+        <div class="bpe-corpus-display" id="bpe-corpus"></div>
+        <h3 style="font-size:0.85rem;color:#8b949e;margin-top:12px;margin-bottom:4px;">Vocabulary (<span id="bpe-vocab-count">0</span> tokens)</h3>
+        <div class="bpe-vocab-display" id="bpe-vocab"></div>
       </div>
     </div>
-    <div class="card">
+
+    <div class="card" id="bpe-tok-ids-card">
       <h2>Token IDs</h2>
       <div id="tok-ids" style="font-family:monospace;font-size:0.82rem;color:#58a6ff;line-height:2;word-break:break-all;"></div>
     </div>
@@ -486,6 +565,7 @@
           <input type="range" id="attn-temp" min="1" max="20" value="8" step="1" />
           <span id="attn-temp-val">0.8</span>
         </label>
+        <button id="attn-causal-btn">Causal Mask</button>
       </div>
       <div id="attn-canvas-wrap">
         <canvas id="attn-canvas"></canvas>
@@ -498,6 +578,11 @@
         <div class="legend-item"><div class="legend-dot" style="background:#1f6feb"></div> Medium</div>
         <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div> High</div>
         <div class="legend-item"><div class="legend-dot" style="background:#e6edf3"></div> Max</div>
+      </div>
+      <div class="info-box" id="attn-causal-info" style="display:none;border-left-color:#f78166;margin-top:10px;">
+        <strong style="color:#f78166">Causal Masking (Decoder-Only):</strong>
+        GPT-style models use causal masking so each token can only attend to itself and earlier tokens.
+        The upper triangle (red overlay) is set to &minus;&infin; before softmax, making those weights effectively 0.
       </div>
     </div>
     <div class="info-box">
@@ -614,12 +699,28 @@
           <input type="range" id="sl-speed" min="50" max="1000" value="250" step="50" />
           <span class="slider-val" id="sl-speed-val">250</span>
         </div>
+        <div class="slider-row beam-width-row">
+          <label>Beam width</label>
+          <select id="sl-beam">
+            <option value="1">Greedy (beam=1)</option>
+            <option value="2">Beam-2</option>
+            <option value="3">Beam-3</option>
+            <option value="5">Beam-5</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="card">
       <div class="prob-bar-wrap">
         <h3>Next token probabilities (top 10)</h3>
         <div id="prob-bars"></div>
+      </div>
+    </div>
+    <div id="beam-canvas-wrap" style="display:none;" class="card">
+      <h3 style="font-size:0.9rem;color:#8b949e;margin-bottom:8px;">Beam Search Tree</h3>
+      <canvas id="beam-canvas" width="740" height="320"></canvas>
+      <div style="font-size:0.78rem;color:#484f58;margin-top:6px;">
+        Gold path = highest cumulative log-prob. Grey dashed = pruned beams.
       </div>
     </div>
     <div class="info-box">
@@ -749,10 +850,24 @@
           <button class="phase-tab active" data-phase="pretrain">&#x2460; Pre-training</button>
           <button class="phase-tab" data-phase="sft">&#x2461; Supervised Fine-tuning (SFT)</button>
           <button class="phase-tab" data-phase="rlhf">&#x2462; RLHF / DPO</button>
+          <button class="phase-tab" data-phase="gradflow">&#x2463; Gradient Flow</button>
+          <button class="phase-tab" data-phase="scaling">&#x2464; Scaling Laws</button>
         </div>
         <button id="train-compare">Compare All</button>
       </div>
       <canvas id="train-canvas" width="760" height="300" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <!-- Gradient Flow controls: shown only in gradflow tab -->
+      <div id="grad-controls" style="display:none;margin-bottom:10px;flex-wrap:wrap;gap:14px;align-items:center;">
+        <label style="font-size:0.85rem;color:#8b949e;">
+          <input type="checkbox" id="grad-residual" checked /> With Residual Connections
+        </label>
+        <label style="font-size:0.85rem;color:#8b949e;">Learning Rate:
+          <input type="range" id="grad-lr" min="1" max="20" value="3" step="1" />
+          <span id="grad-lr-val" style="color:#58a6ff;font-weight:700;">0.003</span>
+        </label>
+      </div>
+      <canvas id="grad-canvas" width="760" height="300" style="display:none;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <canvas id="scaling-canvas" width="760" height="300" style="display:none;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
     </div>
     <div class="grid-2">
       <div class="card">
@@ -836,6 +951,50 @@
     </div>
   </div>
 
+  <!-- ====== LAYERNORM PANEL ====== -->
+  <div class="panel" id="layernorm">
+    <div class="card">
+      <h2>Layer Normalization Explorer</h2>
+      <p>Step through the LayerNorm operation: mean subtraction, variance normalization, then learnable scale (&gamma;) and shift (&beta;) parameters.</p>
+    </div>
+    <div class="card">
+      <div class="step-nav">
+        <button id="ln-prev" disabled>&larr; Prev</button>
+        <div class="step-dots" id="ln-dots"></div>
+        <span class="step-label" id="ln-step-label">Step 1: Raw Activations</span>
+        <button id="ln-next">Next &rarr;</button>
+      </div>
+      <div style="margin-bottom:10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+        <label style="font-size:0.85rem;color:#8b949e;">Outlier strength:
+          <input type="range" id="ln-outlier" min="0" max="10" value="0" step="1" />
+          <span id="ln-outlier-val" style="color:#58a6ff;font-weight:700;">0</span>
+        </label>
+        <label style="font-size:0.85rem;color:#8b949e;">Placement:
+          <select id="ln-placement">
+            <option value="post">Post-LN (original Transformer)</option>
+            <option value="pre">Pre-LN (modern GPT-style)</option>
+          </select>
+        </label>
+      </div>
+      <canvas id="ln-canvas" width="760" height="300" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <div id="ln-formula" class="info-box" style="margin-top:12px;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;"></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Before vs After</h2>
+        <canvas id="ln-compare" width="360" height="200" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      </div>
+      <div class="card">
+        <h2 id="ln-placement-title">Post-LN (Original)</h2>
+        <p id="ln-placement-text" style="font-size:0.88rem;color:#8b949e;line-height:1.7;">The original Transformer applies LayerNorm <em>after</em> the sublayer and residual add: <code>LN(x + Sublayer(x))</code>. This was found to make training unstable with large learning rates, requiring careful warm-up schedules.</p>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Formula:</strong> LN(x) = &gamma; &sdot; (x &minus; &mu;) / &radic;(&sigma;&sup2; + &epsilon;) + &beta;<br>
+      where &mu; = mean(x), &sigma;&sup2; = variance(x), &gamma; and &beta; are learned per-dimension. &epsilon; = 1e&minus;5 prevents division by zero.
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -869,6 +1028,8 @@ function lerpColor(c1, c2, t) {
 
 function rgbStr(rgb) { return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')'; }
 
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
 /* ================================================================
    NAV
    ================================================================ */
@@ -884,6 +1045,7 @@ document.querySelectorAll('#nav button').forEach(btn => {
     if (btn.dataset.panel === 'posenc')     initPosEnc();
     if (btn.dataset.panel === 'sdpa')       initSDPA();
     if (btn.dataset.panel === 'training')   drawTraining();
+    if (btn.dataset.panel === 'layernorm')  initLayerNorm();
   });
 });
 
@@ -969,6 +1131,124 @@ function renderTokens() {
 
 document.getElementById('tok-input').addEventListener('input', renderTokens);
 renderTokens();
+
+/* ================================================================
+   BPE TAB SWITCHING
+   ================================================================ */
+document.getElementById('bpe-tab-tokenize').addEventListener('click', function() {
+  this.classList.add('active');
+  document.getElementById('bpe-tab-process').classList.remove('active');
+  document.getElementById('bpe-pane-tokenize').style.display = '';
+  document.getElementById('bpe-pane-process').style.display = 'none';
+  document.getElementById('bpe-tok-ids-card').style.display = '';
+});
+document.getElementById('bpe-tab-process').addEventListener('click', function() {
+  this.classList.add('active');
+  document.getElementById('bpe-tab-tokenize').classList.remove('active');
+  document.getElementById('bpe-pane-tokenize').style.display = 'none';
+  document.getElementById('bpe-pane-process').style.display = '';
+  document.getElementById('bpe-tok-ids-card').style.display = 'none';
+  renderBPEStep();
+});
+
+/* ================================================================
+   BPE PROCESS ANIMATOR
+   ================================================================ */
+const BPE_MERGE_STEPS = [
+  { pair:['e','s'],       merged:'es',       desc:'Merge ("e","s") \u2192 "es" \u2014 appears in "newest" and "widest"' },
+  { pair:['es','t'],      merged:'est',      desc:'Merge ("es","t") \u2192 "est" \u2014 appears in "newest" and "widest"' },
+  { pair:['l','o'],       merged:'lo',       desc:'Merge ("l","o") \u2192 "lo" \u2014 appears in "low" and "lower"' },
+  { pair:['lo','w'],      merged:'low',      desc:'Merge ("lo","w") \u2192 "low" \u2014 appears in "low" and "lower"' },
+  { pair:['n','e'],       merged:'ne',       desc:'Merge ("n","e") \u2192 "ne" \u2014 appears in "newest"' },
+  { pair:['ne','w'],      merged:'new',      desc:'Merge ("ne","w") \u2192 "new" \u2014 appears in "newest"' },
+  { pair:['new','est'],   merged:'newest',   desc:'Merge ("new","est") \u2192 "newest"' },
+  { pair:['w','i'],       merged:'wi',       desc:'Merge ("w","i") \u2192 "wi" \u2014 appears in "widest"' },
+  { pair:['wi','d'],      merged:'wid',      desc:'Merge ("wi","d") \u2192 "wid"' },
+  { pair:['wid','est'],   merged:'widest',   desc:'Merge ("wid","est") \u2192 "widest"' },
+  { pair:['low','e'],     merged:'lowe',     desc:'Merge ("low","e") \u2192 "lowe"' },
+  { pair:['lowe','r'],    merged:'lower',    desc:'Merge ("lowe","r") \u2192 "lower"' },
+  { pair:['low','</w>'],  merged:'low</w>',  desc:'Merge ("low","</w>") \u2014 marks end of standalone "low"' },
+];
+
+let bpeStep = 0;
+
+function bpeGetCorpus(upToStep) {
+  let corpus = [
+    ['l','o','w','</w>'],
+    ['l','o','w','e','r','</w>'],
+    ['n','e','w','e','s','t','</w>'],
+    ['w','i','d','e','s','t','</w>'],
+  ];
+  for (let s = 0; s < upToStep; s++) {
+    const [a, b] = BPE_MERGE_STEPS[s].pair;
+    const merged = BPE_MERGE_STEPS[s].merged;
+    corpus = corpus.map(word => {
+      const out = [];
+      let i = 0;
+      while (i < word.length) {
+        if (word[i] === a && i + 1 < word.length && word[i+1] === b) {
+          out.push(merged); i += 2;
+        } else { out.push(word[i]); i++; }
+      }
+      return out;
+    });
+  }
+  return corpus;
+}
+
+function bpeGetVocab(upToStep) {
+  const vocab = new Set(['l','o','w','</w>','e','r','n','s','t','i','d']);
+  for (let s = 0; s < upToStep; s++) vocab.add(BPE_MERGE_STEPS[s].merged);
+  return Array.from(vocab);
+}
+
+function renderBPEStep() {
+  const corpus = bpeGetCorpus(bpeStep);
+  const vocab  = bpeGetVocab(bpeStep);
+  const nextMerge = bpeStep < BPE_MERGE_STEPS.length ? BPE_MERGE_STEPS[bpeStep] : null;
+
+  const corpusEl = document.getElementById('bpe-corpus');
+  const WORD_NAMES = ['low', 'lower', 'newest', 'widest'];
+  corpusEl.innerHTML = corpus.map((word, wi) => {
+    const parts = word.map((tok, ti) => {
+      const isFirst  = nextMerge && tok === nextMerge.pair[0] && ti + 1 < word.length && word[ti+1] === nextMerge.pair[1];
+      const isSecond = nextMerge && tok === nextMerge.pair[1] && ti > 0 && word[ti-1] === nextMerge.pair[0];
+      if (isFirst || isSecond) return '<span class="bpe-pair-highlight">' + tok + '</span>';
+      return '<span style="color:#e6edf3;">' + tok + '</span>';
+    });
+    return '<span style="color:#484f58;margin-right:4px;">' + WORD_NAMES[wi] + ':</span> ' + parts.join(' ');
+  }).join('<br>');
+
+  const vocabEl = document.getElementById('bpe-vocab');
+  const newestToken = bpeStep > 0 ? BPE_MERGE_STEPS[bpeStep-1].merged : null;
+  vocabEl.innerHTML = vocab.map(tok =>
+    '<span class="bpe-vocab-token' + (tok === newestToken ? ' new' : '') + '">' + tok + '</span>'
+  ).join('');
+
+  document.getElementById('bpe-vocab-count').textContent = vocab.length;
+  document.getElementById('bpe-step-counter').textContent = 'Step ' + bpeStep + ' / ' + BPE_MERGE_STEPS.length;
+  document.getElementById('bpe-desc').textContent = bpeStep === 0
+    ? 'Initial state: each word split into individual characters. End-of-word </w> marker added.'
+    : BPE_MERGE_STEPS[bpeStep - 1].desc;
+  document.getElementById('bpe-next').disabled = bpeStep >= BPE_MERGE_STEPS.length;
+}
+
+document.getElementById('bpe-reset').addEventListener('click', () => { bpeStep = 0; renderBPEStep(); });
+document.getElementById('bpe-next').addEventListener('click', () => {
+  if (bpeStep < BPE_MERGE_STEPS.length) { bpeStep++; renderBPEStep(); }
+});
+
+/* ================================================================
+   CAUSAL MASK TOGGLE
+   ================================================================ */
+let attnCausalMask = false;
+
+document.getElementById('attn-causal-btn').addEventListener('click', function() {
+  attnCausalMask = !attnCausalMask;
+  this.classList.toggle('active', attnCausalMask);
+  document.getElementById('attn-causal-info').style.display = attnCausalMask ? 'block' : 'none';
+  drawAttention();
+});
 
 /* ================================================================
    ATTENTION
@@ -1067,6 +1347,24 @@ function drawAttention() {
       }
     });
   });
+
+  // Causal mask overlay
+  if (attnCausalMask) {
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const x = margin + j * cellSize;
+        const y = margin + i * cellSize;
+        ctx.fillStyle = 'rgba(247, 129, 102, 0.45)';
+        ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+        ctx.strokeStyle = 'rgba(247, 129, 102, 0.7)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x + 2, y + 2);
+        ctx.lineTo(x + cellSize - 3, y + cellSize - 3);
+        ctx.stroke();
+      }
+    }
+  }
 }
 
 document.getElementById('attn-sentence').addEventListener('change', drawAttention);
@@ -1119,11 +1417,21 @@ document.getElementById('attn-temp').addEventListener('input', function() {
       scores.push(softmax(r, temp));
     }
 
+    // Detect masked cell
+    if (attnCausalMask && col > row) {
+      tooltip.textContent = 'Masked \u2014 cannot attend to future tokens';
+      tooltip.style.display = 'block';
+      tooltip.style.left = (mx + 12) + 'px';
+      tooltip.style.top  = (my - 28) + 'px';
+      hoverInfo.textContent = 'Upper triangle: masked out (set to -\u221E before softmax)';
+      return;
+    }
+
     const val = scores[row][col];
     tooltip.style.display = 'block';
     tooltip.style.left = (mx + 12) + 'px';
     tooltip.style.top  = (my - 28) + 'px';
-    tooltip.textContent = '"' + words[row] + '" → "' + words[col] + '": ' + (val * 100).toFixed(1) + '%';
+    tooltip.textContent = '"' + words[row] + '" \u2192 "' + words[col] + '": ' + (val * 100).toFixed(1) + '%';
 
     // top attended for this row
     const rowScores = scores[row].map((v, j) => ({ word: words[j], v }))
@@ -1701,6 +2009,113 @@ document.getElementById('gen-start').addEventListener('click', startGeneration);
 });
 
 /* ================================================================
+   BEAM SEARCH VISUALIZER
+   ================================================================ */
+function buildBeamTree(promptKey, beamWidth) {
+  const rng = seededRand(promptKey.length * 31 + beamWidth * 7);
+  const STEP_WORDS = [
+    ['bright','uncertain','transforming','complex','rapidly','here','exciting'],
+    ['and','will','that','a','the','can','to'],
+    ['we','humans','models','systems','society','world','continue'],
+    ['learning','capable','more','powerful','new','faster','smarter'],
+    ['tasks','problems','domains','fields','aspects','areas','ways'],
+  ];
+
+  let beams = STEP_WORDS[0].slice(0, beamWidth).map((w, i) => ({
+    tokens: [w],
+    cumLogp: Math.log(0.18 - i * 0.03 + rng() * 0.01),
+  }));
+  const levels = [beams.map(b => ({ token: b.tokens[0], cumLogp: b.cumLogp, pruned: false, parentIdx: 0 }))];
+
+  for (let step = 1; step < 5; step++) {
+    const candidates = [];
+    beams.forEach((beam, bi) => {
+      STEP_WORDS[step].slice(0, beamWidth + 1).forEach((w, wi) => {
+        const lp = Math.log(0.15 - wi * 0.015 + rng() * 0.01);
+        candidates.push({ tokens: [...beam.tokens, w], cumLogp: beam.cumLogp + lp, parentIdx: bi });
+      });
+    });
+    candidates.sort((a, b) => b.cumLogp - a.cumLogp);
+    const kept   = candidates.slice(0, beamWidth);
+    const pruned = candidates.slice(beamWidth, beamWidth * 2);
+    const levelNodes = kept.map(c => ({
+      token: c.tokens[c.tokens.length-1], cumLogp: c.cumLogp, pruned: false, parentIdx: c.parentIdx
+    }));
+    pruned.forEach(c => levelNodes.push({
+      token: c.tokens[c.tokens.length-1], cumLogp: c.cumLogp, pruned: true, parentIdx: c.parentIdx
+    }));
+    levels.push(levelNodes);
+    beams = kept;
+  }
+  return { levels };
+}
+
+function drawBeamTree() {
+  const beamWidth = +document.getElementById('sl-beam').value;
+  if (beamWidth === 1) { document.getElementById('beam-canvas-wrap').style.display = 'none'; return; }
+  document.getElementById('beam-canvas-wrap').style.display = '';
+
+  const prompt = document.getElementById('gen-prompt').value;
+  const tree   = buildBeamTree(prompt, beamWidth);
+  const levels = tree.levels;
+
+  const canvas = document.getElementById('beam-canvas');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const nLevels = levels.length;
+  const stepX = W / (nLevels + 1);
+  const winnerColor = '#ffa657';
+  const activeColor = '#58a6ff';
+  const prunedColor = '#30363d';
+
+  const nodePos = levels.map((level, li) => {
+    const x = stepX * (li + 1);
+    const total = level.length;
+    return level.map((n, ni) => ({ x, y: H * (ni + 1) / (total + 1), ...n }));
+  });
+
+  // Draw connections
+  nodePos.forEach((level, li) => {
+    if (li === 0) return;
+    level.forEach(node => {
+      const parentList = nodePos[li-1];
+      const parent = parentList[node.parentIdx] || parentList[0];
+      const isWinner = li === nLevels - 1 && !node.pruned;
+      ctx.strokeStyle = node.pruned ? prunedColor : (isWinner ? winnerColor : activeColor + '88');
+      ctx.lineWidth = node.pruned ? 1 : 2;
+      ctx.setLineDash(node.pruned ? [3,3] : []);
+      ctx.beginPath(); ctx.moveTo(parent.x, parent.y); ctx.lineTo(node.x, node.y); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  });
+
+  // Draw nodes
+  nodePos.forEach((level, li) => {
+    level.forEach(node => {
+      const r   = node.pruned ? 12 : 16;
+      const col = node.pruned ? prunedColor : (li === nLevels-1 && !node.pruned ? winnerColor : activeColor);
+      ctx.beginPath(); ctx.arc(node.x, node.y, r, 0, Math.PI*2);
+      ctx.fillStyle = col + (node.pruned ? '44' : '33'); ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = node.pruned ? 1 : 2; ctx.stroke();
+      ctx.fillStyle = node.pruned ? '#484f58' : '#e6edf3';
+      ctx.font = (node.pruned ? '9' : '10') + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(node.token, node.x, node.y + 3);
+      ctx.fillStyle = '#484f58'; ctx.font = '8px monospace';
+      ctx.fillText(node.cumLogp.toFixed(1), node.x, node.y + r + 10);
+    });
+  });
+
+  ctx.fillStyle = winnerColor; ctx.font = 'bold 11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Best beam (highest cumulative log-prob)', 6, 14);
+}
+
+document.getElementById('sl-beam').addEventListener('change', drawBeamTree);
+document.getElementById('gen-start').addEventListener('click', () => setTimeout(drawBeamTree, 100));
+
+/* ================================================================
    TOKENIZER EXAMPLE BUTTONS
    ================================================================ */
 document.querySelectorAll('.example-btn').forEach(btn => {
@@ -2203,6 +2618,169 @@ document.getElementById('ffn-canvas').addEventListener('mousemove', function(e) 
 document.querySelector('[data-panel="ffn"]').addEventListener = document.querySelector('[data-panel="ffn"]').addEventListener;
 
 /* ================================================================
+   LAYERNORM EXPLORER
+   ================================================================ */
+const LN_STEPS = [
+  { label: 'Step 1 / 4 \u2014 Raw Activations',
+    formula: 'x = raw hidden-state vector (12 dimensions)\nValues can be large, small, or extreme \u2014 making training unstable.' },
+  { label: 'Step 2 / 4 \u2014 Subtract Mean (\u03BC)',
+    formula: '\u03BC = (1/d) \u03A3 x_i    d = 12\nCentered x\u0302 = x - \u03BC\nMean is now 0; values shifted toward center.' },
+  { label: 'Step 3 / 4 \u2014 Normalize by Std Dev (\u03C3)',
+    formula: '\u03C3\u00B2 = (1/d) \u03A3 (x_i - \u03BC)\u00B2\nNormalized: x\u0302 = (x - \u03BC) / \u221A(\u03C3\u00B2 + \u03B5)\nAll values now \u2248N(0,1). Outlier is tamed.' },
+  { label: 'Step 4 / 4 \u2014 Apply \u03B3 (scale) and \u03B2 (shift)',
+    formula: 'Output = \u03B3 \u00B7 x\u0302 + \u03B2\n\u03B3 and \u03B2 are learned parameters (one per dimension).\nThe model can re-scale/shift to any distribution it finds useful.' },
+];
+let lnStep = 0;
+
+function getLNData() {
+  const outlier = +document.getElementById('ln-outlier').value;
+  const rng = seededRand(777);
+  const raw = Array.from({length:12}, () => rng() * 4 - 2);
+  raw[4] = raw[4] + outlier * 2.5;
+  const rng2 = seededRand(42);
+  const gamma = Array.from({length:12}, () => 0.5 + rng2() * 1.5);
+  const beta  = Array.from({length:12}, () => rng2() * 0.8 - 0.4);
+  const mean = raw.reduce((a,b)=>a+b,0)/raw.length;
+  const centered = raw.map(v => v - mean);
+  const variance = centered.reduce((a,v)=>a+v*v,0)/centered.length;
+  const std = Math.sqrt(variance + 1e-5);
+  const normed = centered.map(v => v/std);
+  const output = normed.map((v,i) => gamma[i]*v + beta[i]);
+  return { raw, centered, normed, output, mean, std, gamma, beta };
+}
+
+function drawLN() {
+  const canvas = document.getElementById('ln-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const d = getLNData();
+  const n = 12;
+  const padL = 40, padR = 20, padT = 50, padB = 30;
+  const chartW = W - padL - padR;
+  const barGroupW = chartW / n;
+  const barW2 = barGroupW * 0.55;
+  let series, color, title, yMax;
+  if (lnStep === 0) {
+    series = d.raw; color = '#58a6ff'; title = 'Raw x';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 3) * 1.2;
+  } else if (lnStep === 1) {
+    series = d.centered; color = '#d2a8ff'; title = 'Centered (x - \u03BC)';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 2) * 1.2;
+  } else if (lnStep === 2) {
+    series = d.normed; color = '#3fb950'; title = 'Normalized'; yMax = 3;
+  } else {
+    series = d.output; color = '#ffa657'; title = 'Output (\u03B3 \u00B7 x\u0302 + \u03B2)';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 2) * 1.2;
+  }
+  const chartH = H - padT - padB;
+  const midY = padT + chartH / 2;
+
+  // Zero line
+  ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(padL, midY); ctx.lineTo(padL+chartW, midY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Mean line on step 1
+  if (lnStep === 1) {
+    const meanY = midY - (d.mean / yMax) * (chartH/2);
+    ctx.strokeStyle = '#ffa657'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(padL, meanY); ctx.lineTo(padL+chartW, meanY); ctx.stroke();
+    ctx.fillStyle = '#ffa657'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('\u03BC = ' + d.mean.toFixed(3), padL + 4, meanY - 4);
+  }
+
+  const outlierStrength = +document.getElementById('ln-outlier').value;
+  series.forEach((v, i) => {
+    const x = padL + i * barGroupW + (barGroupW - barW2)/2;
+    const barH3 = Math.abs(v / yMax) * (chartH / 2);
+    const isOutlier = i === 4 && lnStep < 3 && outlierStrength > 0;
+    ctx.fillStyle = (isOutlier ? '#f78166' : color) + 'cc';
+    ctx.fillRect(x, v >= 0 ? midY - barH3 : midY, barW2, barH3);
+    ctx.strokeStyle = isOutlier ? '#f78166' : color; ctx.lineWidth = 1;
+    ctx.strokeRect(x, v >= 0 ? midY - barH3 : midY, barW2, barH3);
+    ctx.fillStyle = '#8b949e'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(v.toFixed(1), x + barW2/2, v >= 0 ? midY - barH3 - 3 : midY + barH3 + 10);
+  });
+
+  ctx.fillStyle = color; ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(title + ' (d=12)', padL + chartW/2, 20);
+  ctx.fillStyle = '#484f58'; ctx.font = '11px monospace'; ctx.textAlign = 'right';
+  ctx.fillText('\u03BC=' + d.mean.toFixed(3) + '  \u03C3=' + d.std.toFixed(3), padL + chartW, padT - 5);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+  [yMax, 0, -yMax].forEach(v => {
+    const y2 = midY - (v/yMax) * (chartH/2);
+    ctx.fillText(v.toFixed(1), padL-4, y2+3);
+  });
+
+  document.getElementById('ln-formula').textContent = LN_STEPS[lnStep].formula;
+}
+
+function drawLNCompare() {
+  const canvas = document.getElementById('ln-compare');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const d = getLNData();
+  const n = 12;
+  const padL = 10, padR = 10, padT = 30, padB = 20;
+  const halfW = (W - padL - padR - 10) / 2;
+  const barW3 = halfW / n * 0.6;
+  const allVals = [...d.raw, ...d.output];
+  const yMax2 = Math.max(Math.abs(Math.min(...allVals)), Math.max(...allVals)) * 1.2;
+  const chartH2 = H - padT - padB;
+  const midY2 = padT + chartH2 / 2;
+  [[d.raw, '#58a6ff', 'Before', padL], [d.output, '#ffa657', 'After', padL + halfW + 10]].forEach(([series2, color2, label2, ox]) => {
+    ctx.fillStyle = color2; ctx.font = 'bold 11px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(label2, ox + halfW/2, 16);
+    ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1; ctx.setLineDash([2,2]);
+    ctx.beginPath(); ctx.moveTo(ox, midY2); ctx.lineTo(ox+halfW, midY2); ctx.stroke();
+    ctx.setLineDash([]);
+    series2.forEach((v, i) => {
+      const x2 = ox + i * (halfW/n) + (halfW/n - barW3)/2;
+      const bh2 = Math.abs(v/yMax2) * (chartH2/2);
+      ctx.fillStyle = color2 + '88';
+      ctx.fillRect(x2, v >= 0 ? midY2-bh2 : midY2, barW3, bh2);
+    });
+  });
+}
+
+function updateLNNav() {
+  document.getElementById('ln-prev').disabled = lnStep === 0;
+  document.getElementById('ln-next').disabled = lnStep === LN_STEPS.length - 1;
+  document.getElementById('ln-step-label').textContent = LN_STEPS[lnStep].label;
+  const dotsEl = document.getElementById('ln-dots');
+  dotsEl.innerHTML = '';
+  LN_STEPS.forEach((_,i) => {
+    const d3 = document.createElement('div');
+    d3.className = 'step-dot' + (i===lnStep?' active':'');
+    dotsEl.appendChild(d3);
+  });
+}
+
+function initLayerNorm() { updateLNNav(); drawLN(); drawLNCompare(); }
+
+document.getElementById('ln-prev').addEventListener('click', () => {
+  if (lnStep > 0) { lnStep--; updateLNNav(); drawLN(); }
+});
+document.getElementById('ln-next').addEventListener('click', () => {
+  if (lnStep < LN_STEPS.length-1) { lnStep++; updateLNNav(); drawLN(); }
+});
+document.getElementById('ln-outlier').addEventListener('input', function() {
+  document.getElementById('ln-outlier-val').textContent = this.value;
+  drawLN(); drawLNCompare();
+});
+document.getElementById('ln-placement').addEventListener('change', function() {
+  const isPre = this.value === 'pre';
+  document.getElementById('ln-placement-title').textContent = isPre ? 'Pre-LN (Modern GPT)' : 'Post-LN (Original)';
+  document.getElementById('ln-placement-text').textContent = isPre
+    ? 'Pre-LN (also called "Pre-Norm") applies LayerNorm before the sublayer: LN(x) goes into Attention/FFN, then the residual is added: x + Sublayer(LN(x)). This is more stable and widely used in GPT-2, GPT-3, LLaMA.'
+    : 'Post-LN applies LayerNorm after the sublayer and residual: LN(x + Sublayer(x)). Original in "Attention is All You Need" but requires careful warm-up; unstable with large learning rates.';
+});
+
+/* ================================================================
    TRAINING DYNAMICS
    ================================================================ */
 function genLoss(steps, start, end, noiseAmp, seed) {
@@ -2408,17 +2986,240 @@ function drawTrainingCompare() {
   ctx.fillText('Relative Step Progress →', padL + chartW / 2, H - 4);
 }
 
+/* ================================================================
+   GRADIENT FLOW VISUALIZER
+   ================================================================ */
+const GRAD_N_LAYERS = 8;
+
+function computeGradMagnitudes(withResidual, lr) {
+  const mags = [1.0];
+  for (let i = 1; i < GRAD_N_LAYERS; i++) {
+    const rng = seededRand(i * 99 + (withResidual ? 0 : 500));
+    const noise = 0.9 + rng() * 0.2;
+    const prev = mags[mags.length-1];
+    if (withResidual) {
+      mags.push(prev * noise * (1 + 0.25));
+    } else {
+      const baseFactor = lr > 0.01 ? 0.45 + (lr - 0.01) * 2 : 0.45;
+      mags.push(prev * clamp(baseFactor, 0.1, 1.8) * noise);
+    }
+  }
+  return mags;
+}
+
+function drawGradFlow() {
+  const canvas = document.getElementById('grad-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const withResidual = document.getElementById('grad-residual').checked;
+  const lr = +document.getElementById('grad-lr').value / 1000;
+  const mags = computeGradMagnitudes(withResidual, lr);
+
+  const padL = 80, padR = 160, padT = 30, padB = 30;
+  const chartH = H - padT - padB;
+  const layerH = chartH / GRAD_N_LAYERS;
+  const spineX = padL + 60;
+
+  ctx.fillStyle = withResidual ? '#3fb950' : '#f78166';
+  ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText(withResidual ? 'With Residual Connections \u2014 Gradient Flows Stably' : 'Without Residual \u2014 Gradient Vanishes / Explodes', padL, 18);
+
+  mags.forEach((mag, i) => {
+    const layerIdx = GRAD_N_LAYERS - 1 - i;
+    const y = padT + layerIdx * layerH;
+    const isExploding = mag > 2.0;
+    const isDead = mag < 0.05;
+    const blockColor = isExploding ? '#f78166' : isDead ? '#484f58' : withResidual ? '#3fb950' : '#ffa657';
+
+    ctx.fillStyle = blockColor + '33';
+    ctx.strokeStyle = blockColor; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(spineX - 40, y + 2, 80, layerH - 4, 4);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = '#8b949e'; ctx.font = '11px monospace'; ctx.textAlign = 'right';
+    ctx.fillText('Layer ' + (GRAD_N_LAYERS - layerIdx), spineX - 46, y + layerH/2 + 4);
+
+    const barMaxW = padR - 20;
+    const barW4 = Math.min(barMaxW, mag * barMaxW / 2.0);
+    ctx.fillStyle = blockColor + 'aa';
+    ctx.fillRect(spineX + 44, y + layerH/4, barW4, layerH/2);
+    ctx.fillStyle = blockColor; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText(mag.toFixed(3) + (isExploding ? ' !!!' : isDead ? ' (dead)' : ''), spineX + 46 + barW4 + 4, y + layerH/2 + 4);
+
+    const pulseR = Math.min(8, Math.max(2, mag * 4));
+    ctx.beginPath(); ctx.arc(spineX, y + layerH/2, pulseR, 0, Math.PI*2);
+    ctx.fillStyle = blockColor; ctx.fill();
+  });
+
+  ctx.strokeStyle = '#484f58'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(spineX, padT); ctx.lineTo(spineX, padT + chartH); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('\u2191 Backward Pass (gradient flow direction)', spineX, H - 4);
+  ctx.fillStyle = '#484f58'; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Gradient magnitude \u2192', spineX + 46, padT + 10);
+}
+
+document.getElementById('grad-residual').addEventListener('change', drawGradFlow);
+document.getElementById('grad-lr').addEventListener('input', function() {
+  document.getElementById('grad-lr-val').textContent = (this.value/1000).toFixed(3);
+  drawGradFlow();
+});
+
+/* ================================================================
+   SCALING LAWS EXPLORER
+   ================================================================ */
+const SCALING_MODELS = [
+  { label: 'XS (125M)', params: 0.125e9, color: '#58a6ff', alpha: 0.076, A: 406.4 },
+  { label: 'S (1.3B)',  params: 1.3e9,   color: '#3fb950', alpha: 0.076, A: 406.4 },
+  { label: 'M (7B)',    params: 7e9,      color: '#ffa657', alpha: 0.076, A: 406.4 },
+  { label: 'L (70B)',   params: 70e9,     color: '#d2a8ff', alpha: 0.076, A: 406.4 },
+];
+const SCALING_REFS = [
+  { label: 'GPT-2',    flops: 1e20, loss: 3.0,  color: '#58a6ff' },
+  { label: 'LLaMA-7B', flops: 2e22, loss: 1.95, color: '#3fb950' },
+  { label: 'GPT-4\u007E',flops: 2e24,loss: 1.75, color: '#f78166' },
+];
+
+function scalingLoss(params, tokens) {
+  return 406.4 * Math.pow(params, -0.076) + 410.7 * Math.pow(tokens, -0.095) + 1.69;
+}
+
+function drawScalingLaws() {
+  const canvas = document.getElementById('scaling-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const padL = 68, padR = 100, padT = 36, padB = 44;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const xMin = 19, xMax = 25;
+  const yMin = 1.5, yMax = 4.5;
+  const toX = logF => padL + (logF - xMin) / (xMax - xMin) * chartW;
+  const toY = loss => padT + (1 - (loss - yMin) / (yMax - yMin)) * chartH;
+
+  // Grid
+  ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 6; i++) {
+    const x = padL + chartW * i / 6;
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT+chartH); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('10^' + (xMin + i), x, padT+chartH+14);
+  }
+  [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5].forEach(v => {
+    const y = toY(v);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+    ctx.fillText(v.toFixed(1), padL-5, y+3);
+  });
+
+  // Model curves
+  SCALING_MODELS.forEach(m => {
+    ctx.strokeStyle = m.color; ctx.lineWidth = 2.5; ctx.beginPath();
+    let first = true;
+    for (let logC = xMin; logC <= xMax; logC += 0.05) {
+      const C = Math.pow(10, logC);
+      const tokens = C / (6 * m.params);
+      const loss = scalingLoss(m.params, tokens);
+      if (loss < yMin || loss > yMax) { first = true; continue; }
+      const x = toX(logC), y = toY(loss);
+      first ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      first = false;
+    }
+    ctx.stroke();
+    // Label at right edge
+    const lastTokens = Math.pow(10, xMax) / (6 * m.params);
+    const lastLoss = scalingLoss(m.params, lastTokens);
+    if (lastLoss >= yMin && lastLoss <= yMax) {
+      ctx.fillStyle = m.color; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(m.label, padL + chartW + 4, toY(lastLoss) + 4);
+    }
+  });
+
+  // Chinchilla optimal frontier (dotted)
+  ctx.strokeStyle = '#ffffff33'; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  let fFirst = true;
+  for (let logC = xMin; logC <= xMax; logC += 0.1) {
+    const C = Math.pow(10, logC);
+    const Nopt = clamp(0.41 * Math.pow(C, 0.49), 1e8, 1e11);
+    const Dopt = C / (6 * Nopt);
+    const loss = scalingLoss(Nopt, Dopt);
+    if (loss < yMin || loss > yMax) { fFirst = true; continue; }
+    fFirst ? ctx.moveTo(toX(logC), toY(loss)) : ctx.lineTo(toX(logC), toY(loss));
+    fFirst = false;
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = '#ffffff55'; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Chinchilla optimal frontier', padL + chartW*0.3, toY(2.65) - 8);
+
+  // Reference dots
+  SCALING_REFS.forEach(ref => {
+    const x = toX(Math.log10(ref.flops));
+    const y = toY(ref.loss);
+    if (x < padL || x > padL+chartW || y < padT || y > padT+chartH) return;
+    ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2);
+    ctx.fillStyle = ref.color + '88'; ctx.fill();
+    ctx.strokeStyle = ref.color; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = ref.color; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ref.label, x + 8, y - 4);
+  });
+
+  // Axis labels
+  ctx.fillStyle = '#8b949e'; ctx.font = '12px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Compute (FLOPs, log scale) \u2192', padL + chartW/2, H - 4);
+  ctx.save(); ctx.translate(14, padT + chartH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('\u2190 Loss', 0, 0); ctx.restore();
+
+  ctx.fillStyle = '#58a6ff'; ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Scaling Laws \u2014 Loss vs. Compute (Chinchilla Power Law)', padL, 20);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+  ctx.fillText('Loss \u2248 A\u00B7N^(-\u03B1) + B\u00B7D^(-\u03B2) + E  [\u03B1\u22480.076, \u03B2\u22480.095]', padL + chartW, padT - 4);
+}
+
 document.querySelectorAll('.phase-tab').forEach(btn => {
   btn.addEventListener('click', () => {
     trainCompareMode = false;
     document.getElementById('train-compare').classList.remove('active');
     document.getElementById('train-compare').textContent = 'Compare All';
-    currentPhase = btn.dataset.phase;
     document.querySelectorAll('.phase-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+
+    // Show/hide gradient flow and scaling canvases
+    const phase = btn.dataset.phase;
+    const isGrad    = phase === 'gradflow';
+    const isScaling = phase === 'scaling';
+    const isNormal  = !isGrad && !isScaling;
+
+    document.getElementById('train-canvas').style.display    = isNormal  ? 'block' : 'none';
+    document.getElementById('grad-controls').style.display   = isGrad    ? 'flex'  : 'none';
+    document.getElementById('grad-canvas').style.display     = isGrad    ? 'block' : 'none';
+    document.getElementById('scaling-canvas').style.display  = isScaling ? 'block' : 'none';
+
+    if (isGrad) {
+      document.getElementById('phase-title').textContent = 'Gradient Flow';
+      document.getElementById('phase-text').textContent  = 'Gradients flow backward through all layers during backpropagation. Without residual connections, they multiply each layer\'s Jacobian \u2014 causing exponential decay (vanishing) or growth (exploding). Residual connections provide a direct highway for gradients, keeping them stable across all layers.';
+      drawGradFlow();
+      return;
+    }
+    if (isScaling) {
+      document.getElementById('phase-title').textContent = 'Scaling Laws';
+      document.getElementById('phase-text').textContent  = 'Model capability follows power laws with compute, data, and parameters (Kaplan et al. 2020; Chinchilla 2022). Doubling compute always helps, but the optimal split between model size and training tokens follows N* \u2248 D* (Chinchilla-optimal). GPT-3 was over-parameterized relative to its training tokens.';
+      drawScalingLaws();
+      return;
+    }
+
+    currentPhase = phase;
     const ph = TRAIN_PHASES[currentPhase];
-    document.getElementById('phase-title').textContent = ph.title;
-    document.getElementById('phase-text').textContent  = ph.text;
+    if (ph) {
+      document.getElementById('phase-title').textContent = ph.title;
+      document.getElementById('phase-text').textContent  = ph.text;
+    }
     drawTraining();
   });
 });
@@ -2426,7 +3227,7 @@ document.querySelectorAll('.phase-tab').forEach(btn => {
 /* ================================================================
    KEYBOARD NAVIGATION
    ================================================================ */
-const NAV_PANELS = ['tokenizer','attention','transformer','embeddings','generation','about','posenc','sdpa','training','ffn'];
+const NAV_PANELS = ['tokenizer','attention','transformer','embeddings','generation','about','posenc','sdpa','training','ffn','layernorm'];
 document.addEventListener('keydown', e => {
   // Don't intercept when typing in an input
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
