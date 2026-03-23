@@ -297,13 +297,158 @@
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0d1117; }
     ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+
+    /* ===================== EXAMPLE BUTTONS ===================== */
+    .example-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .example-btn {
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+      padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.78rem;
+      transition: all 0.15s;
+    }
+    .example-btn:hover { background: #30363d; color: #e6edf3; border-color: #58a6ff; }
+
+    /* ===================== STEP NAVIGATION ===================== */
+    .step-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .step-nav button {
+      background: #21262d; border: 1px solid #30363d; color: #e6edf3;
+      padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: background 0.2s;
+    }
+    .step-nav button:hover { background: #30363d; }
+    .step-nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .step-dots { display: flex; gap: 6px; }
+    .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #30363d; transition: background 0.2s; }
+    .step-dot.active { background: #58a6ff; }
+    .step-label { font-size: 0.85rem; color: #58a6ff; font-weight: 600; flex: 1; text-align: center; }
+
+    /* ===================== PHASE TABS ===================== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .phase-tab {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid #30363d;
+      background: #21262d; color: #8b949e; cursor: pointer; font-size: 0.82rem; transition: all 0.15s;
+    }
+    .phase-tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+    /* ===================== PE CONTROLS ===================== */
+    .pe-controls { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .pe-controls label { font-size: 0.85rem; color: #8b949e; }
+    .pe-controls select, .pe-controls input[type=range] {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer;
+    }
+    .pe-controls select:focus, .pe-controls input:focus { outline: none; border-color: #58a6ff; }
+
+    /* ===================== TOOLTIP ===================== */
+    .attn-tooltip {
+      position: absolute; background: #21262d; border: 1px solid #30363d;
+      border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; color: #e6edf3;
+      pointer-events: none; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4); display: none;
+    }
+    #attn-canvas-wrap { position: relative; }
+
+    /* ===================== TOP-ATTENDED ===================== */
+    #attn-hover-info {
+      margin-top: 10px; min-height: 28px; font-size: 0.85rem; color: #8b949e;
+      padding: 8px 12px; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 6px; transition: opacity 0.2s;
+    }
+
+    /* ===================== ANALOGY ===================== */
+    .analogy-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .analogy-row select {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 5px 10px; border-radius: 6px; font-size: 0.85rem;
+    }
+    .analogy-row .op { font-size: 1.1rem; color: #58a6ff; font-weight: 700; }
+    .analogy-result {
+      margin-top: 8px; padding: 10px 14px; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 8px; font-size: 0.88rem; color: #3fb950;
+    }
+    .nn-list { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .nn-chip {
+      padding: 3px 10px; border-radius: 12px; font-size: 0.78rem;
+      background: #21262d; border: 1px solid #30363d; color: #8b949e; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nn-chip:hover { background: #30363d; color: #e6edf3; border-color: #58a6ff; }
+    .nn-chip .nn-dist { font-size: 0.7rem; color: #484f58; }
+
+    /* ===================== FFN PANEL ===================== */
+    .ffn-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .ffn-input-row label { font-size: 0.85rem; color: #8b949e; }
+    .ffn-input-row select, .ffn-input-row input[type=range] {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer;
+    }
+
+    /* ===================== KEYBOARD HINT ===================== */
+    .kbd-hint { font-size: 0.75rem; color: #484f58; margin-left: auto; }
+    kbd { background: #21262d; border: 1px solid #484f58; border-radius: 3px; padding: 1px 5px; font-family: monospace; }
+
+    /* ===================== COMPARE TOGGLE ===================== */
+    #train-compare {
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s; margin-left: 8px;
+    }
+    #train-compare.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+    /* ===================== BPE TABS ===================== */
+    .bpe-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .bpe-tab {
+      padding: 5px 14px; border-radius: 6px; border: 1px solid #30363d;
+      background: #21262d; color: #8b949e; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    .bpe-tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    .bpe-step-counter { font-size: 0.82rem; color: #58a6ff; font-weight: 700; }
+    .bpe-corpus-display {
+      font-family: monospace; font-size: 0.88rem; line-height: 2.2;
+      padding: 12px; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; min-height: 80px; word-break: break-all;
+    }
+    .bpe-pair-highlight { color: #ffa657; background: #3d2700; border-radius: 3px; padding: 1px 3px; }
+    .bpe-vocab-display {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+      padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    }
+    .bpe-vocab-token {
+      padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-family: monospace;
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+    }
+    .bpe-vocab-token.new { border-color: #3fb950; color: #3fb950; background: #163020; }
+
+    /* ===================== CAUSAL MASK TOGGLE ===================== */
+    #attn-causal-btn {
+      background: #21262d; border: 1px solid #30363d; color: #8b949e;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s;
+    }
+    #attn-causal-btn.active { background: #f78166; border-color: #f78166; color: #fff; }
+
+    /* ===================== BEAM SEARCH ===================== */
+    #beam-canvas-wrap {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      padding: 12px; margin-top: 14px; overflow-x: auto;
+    }
+    #beam-canvas { display: block; }
+    .beam-width-row select {
+      background: #0d1117; border: 1px solid #30363d; color: #e6edf3;
+      padding: 4px 8px; border-radius: 6px;
+    }
+
+    /* ===================== GRADIENT FLOW ===================== */
+    #grad-canvas { display: block; cursor: default; }
+
+    /* ===================== LAYERNORM ===================== */
+    #ln-canvas, #ln-compare { cursor: default; }
   </style>
 </head>
 <body>
 
 <header>
   <div>
-    <h1>🧠 LLM Visualization Tool</h1>
+    <h1>&#x1F9E0; LLM Visualization Tool</h1>
     <p>Interactive exploration of Large Language Model internals</p>
   </div>
 </header>
@@ -315,6 +460,12 @@
   <button data-panel="embeddings">Embeddings</button>
   <button data-panel="generation">Generation</button>
   <button data-panel="about">About</button>
+  <button data-panel="posenc">Pos. Encoding</button>
+  <button data-panel="sdpa">Scaled Attn</button>
+  <button data-panel="training">Training</button>
+  <button data-panel="ffn">FFN Neurons</button>
+  <button data-panel="layernorm">LayerNorm</button>
+  <span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> switch panels</span>
 </nav>
 
 <main>
@@ -322,20 +473,56 @@
   <!-- ====== TOKENIZER PANEL ====== -->
   <div class="panel active" id="tokenizer">
     <div class="card">
-      <h2>Tokenizer — BPE Simulation</h2>
-      <p>Type any text below to see how a BPE-style tokenizer splits it into sub-word tokens. Each color represents a distinct token.</p>
+      <h2>Tokenizer &mdash; BPE Simulation</h2>
+      <p>Explore how Byte-Pair Encoding works: from raw characters to a learned vocabulary.</p>
     </div>
     <div class="card">
-      <textarea id="tok-input" placeholder="Type something like: The quick brown fox jumps over the lazy dog">The quick brown fox jumps over the lazy dog.</textarea>
-      <div class="token-display" id="tok-display"></div>
-      <div class="tok-stats">
-        <div class="tok-stat">Tokens: <span id="tok-count">0</span></div>
-        <div class="tok-stat">Characters: <span id="char-count">0</span></div>
-        <div class="tok-stat">Avg chars/token: <span id="avg-chars">0</span></div>
-        <div class="tok-stat">Unique tokens: <span id="uniq-count">0</span></div>
+      <div class="bpe-tabs">
+        <button class="bpe-tab active" id="bpe-tab-tokenize">Tokenize</button>
+        <button class="bpe-tab" id="bpe-tab-process">BPE Process</button>
+      </div>
+
+      <!-- Tab 1: existing tokenize UI -->
+      <div id="bpe-pane-tokenize">
+        <div class="example-btns">
+          <button class="example-btn" data-text="The quick brown fox jumps over the lazy dog.">English</button>
+          <button class="example-btn" data-text="def fibonacci(n): return n if n &lt;= 1 else fibonacci(n-1)+fibonacci(n-2)">Code</button>
+          <button class="example-btn" data-text="GPT-4 has ~1.76 trillion parameters and a 128k context window.">AI Facts</button>
+          <button class="example-btn" data-text="The price is $1,234.56 — 40% off! Date: 2024-01-15">Numbers</button>
+          <button class="example-btn" data-text="Transformer architecture enables parallel sequence processing.">Technical</button>
+          <button class="example-btn" data-text="Hello! Bonjour! Hola! Ciao!">Multilingual</button>
+        </div>
+        <textarea id="tok-input" placeholder="Type something like: The quick brown fox jumps over the lazy dog">The quick brown fox jumps over the lazy dog.</textarea>
+        <div class="token-display" id="tok-display"></div>
+        <div class="tok-stats">
+          <div class="tok-stat">Tokens: <span id="tok-count">0</span></div>
+          <div class="tok-stat">Characters: <span id="char-count">0</span></div>
+          <div class="tok-stat">Avg chars/token: <span id="avg-chars">0</span></div>
+          <div class="tok-stat">Unique tokens: <span id="uniq-count">0</span></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: BPE Process Animator -->
+      <div id="bpe-pane-process" style="display:none;">
+        <div class="info-box" style="margin-bottom:12px;">
+          Corpus: <strong style="color:#58a6ff">"low lower newest widest"</strong> &mdash; watch BPE build its vocabulary step by step from individual characters.
+        </div>
+        <div class="step-nav">
+          <button id="bpe-reset">Reset</button>
+          <button id="bpe-next">Next Merge &rarr;</button>
+          <span class="bpe-step-counter" id="bpe-step-counter">Step 0 / 13</span>
+        </div>
+        <div style="margin-bottom:8px;font-size:0.85rem;color:#8b949e;" id="bpe-desc">
+          Initial state: each word split into individual characters. End-of-word marker added.
+        </div>
+        <h3 style="font-size:0.85rem;color:#8b949e;margin-bottom:4px;">Current Corpus State</h3>
+        <div class="bpe-corpus-display" id="bpe-corpus"></div>
+        <h3 style="font-size:0.85rem;color:#8b949e;margin-top:12px;margin-bottom:4px;">Vocabulary (<span id="bpe-vocab-count">0</span> tokens)</h3>
+        <div class="bpe-vocab-display" id="bpe-vocab"></div>
       </div>
     </div>
-    <div class="card">
+
+    <div class="card" id="bpe-tok-ids-card">
       <h2>Token IDs</h2>
       <div id="tok-ids" style="font-family:monospace;font-size:0.82rem;color:#58a6ff;line-height:2;word-break:break-all;"></div>
     </div>
@@ -358,6 +545,10 @@
             <option value="1">She loves playing the piano every day</option>
             <option value="2">The bank can guarantee deposits</option>
             <option value="3">Time flies like an arrow fruit flies like a banana</option>
+            <option value="4">The dog that chased the cat was big</option>
+            <option value="5">She gave him the book from the shelf</option>
+            <option value="6">Transformers learn attention weights automatically</option>
+            <option value="7">The man saw her with a telescope</option>
           </select>
         </label>
         <label>Head:
@@ -366,16 +557,21 @@
             <option value="1">Head 2 (Semantic)</option>
             <option value="2">Head 3 (Positional)</option>
             <option value="3">Head 4 (Coreference)</option>
+            <option value="4">Head 5 (Long-range)</option>
+            <option value="5">Head 6 (Local)</option>
           </select>
         </label>
         <label>Temperature:
           <input type="range" id="attn-temp" min="1" max="20" value="8" step="1" />
           <span id="attn-temp-val">0.8</span>
         </label>
+        <button id="attn-causal-btn">Causal Mask</button>
       </div>
       <div id="attn-canvas-wrap">
         <canvas id="attn-canvas"></canvas>
+        <div class="attn-tooltip" id="attn-tooltip"></div>
       </div>
+      <div id="attn-hover-info">Hover over a cell to see attention details.</div>
       <div class="legend" style="margin-top:12px;">
         <div class="legend-item"><div class="legend-dot" style="background:#0d1117;border:1px solid #30363d"></div> No attention</div>
         <div class="legend-item"><div class="legend-dot" style="background:#1a3a5c"></div> Low</div>
@@ -383,9 +579,14 @@
         <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div> High</div>
         <div class="legend-item"><div class="legend-dot" style="background:#e6edf3"></div> Max</div>
       </div>
+      <div class="info-box" id="attn-causal-info" style="display:none;border-left-color:#f78166;margin-top:10px;">
+        <strong style="color:#f78166">Causal Masking (Decoder-Only):</strong>
+        GPT-style models use causal masking so each token can only attend to itself and earlier tokens.
+        The upper triangle (red overlay) is set to &minus;&infin; before softmax, making those weights effectively 0.
+      </div>
     </div>
     <div class="info-box">
-      <strong>Self-Attention:</strong> For each token, attention scores are computed against all other tokens via Q·Kᵀ/√d_k, then softmax-normalized. Multiple "heads" capture different relationship types simultaneously — syntax, semantics, position, coreference, etc.
+      <strong>Self-Attention:</strong> For each token, attention scores are computed against all other tokens via Q&middot;K&#x1D40;/&radic;d_k, then softmax-normalized. Multiple &ldquo;heads&rdquo; capture different relationship types simultaneously &mdash; syntax, semantics, position, coreference, etc.
     </div>
   </div>
 
@@ -430,8 +631,22 @@
       </div>
       <canvas id="emb-canvas" width="760" height="440"></canvas>
     </div>
+    <div class="card">
+      <h2>Word Analogy Explorer  <span style="font-size:0.8rem;color:#484f58;font-weight:400;">A &minus; B + C &asymp; ?</span></h2>
+      <div class="analogy-row">
+        <select id="ana-a"><option>king</option><option>Paris</option><option>cat</option><option>happy</option><option>man</option><option>dog</option><option>AI</option><option>France</option></select>
+        <span class="op">&minus;</span>
+        <select id="ana-b"><option>man</option><option>France</option><option>dog</option><option>sad</option><option>woman</option><option>cat</option><option>GPU</option><option>England</option></select>
+        <span class="op">+</span>
+        <select id="ana-c"><option>woman</option><option>England</option><option>wolf</option><option>joyful</option><option>king</option><option>lion</option><option>neural</option><option>Tokyo</option></select>
+        <button id="ana-run" style="background:#1f6feb;border:none;color:#fff;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Compute</button>
+      </div>
+      <div class="analogy-result" id="ana-result">Click Compute to find the nearest word.</div>
+      <p style="font-size:0.8rem;color:#484f58;margin-top:8px;">Computed in 2D projected space. Click any word in the canvas to see its nearest neighbors.</p>
+      <div class="nn-list" id="nn-list"></div>
+    </div>
     <div class="info-box">
-      <strong>Embeddings:</strong> Each word is mapped to a ~4096-dimensional vector. Relationships are preserved: king − man + woman ≈ queen. PCA reduces these to 2D for visualization while preserving as much variance as possible.
+      <strong>Embeddings:</strong> Each word is mapped to a ~4096-dimensional vector. Relationships are preserved: king &minus; man + woman &asymp; queen. PCA reduces these to 2D for visualization while preserving as much variance as possible.
     </div>
   </div>
 
@@ -443,10 +658,17 @@
     </div>
     <div class="grid-2">
       <div class="card">
-        <h2>Input & Output</h2>
+        <h2>Input &amp; Output</h2>
         <div class="gen-input-row">
           <input id="gen-prompt" type="text" placeholder="Enter a prompt..." value="The future of artificial intelligence is" />
           <button class="gen-btn" id="gen-start">Generate</button>
+        </div>
+        <div class="example-btns" style="margin-bottom:10px;">
+          <button class="example-btn" data-target="gen-prompt" data-text="The future of artificial intelligence is">AI Future</button>
+          <button class="example-btn" data-target="gen-prompt" data-text="Deep learning models can">Deep Learning</button>
+          <button class="example-btn" data-target="gen-prompt" data-text="The transformer architecture enables">Transformer</button>
+          <button class="example-btn" data-target="gen-prompt" data-text="Natural language processing has">NLP</button>
+          <button class="example-btn" data-target="gen-prompt" data-text="Large language models are trained on">LLM Training</button>
         </div>
         <div id="gen-output"></div>
       </div>
@@ -477,12 +699,28 @@
           <input type="range" id="sl-speed" min="50" max="1000" value="250" step="50" />
           <span class="slider-val" id="sl-speed-val">250</span>
         </div>
+        <div class="slider-row beam-width-row">
+          <label>Beam width</label>
+          <select id="sl-beam">
+            <option value="1">Greedy (beam=1)</option>
+            <option value="2">Beam-2</option>
+            <option value="3">Beam-3</option>
+            <option value="5">Beam-5</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="card">
       <div class="prob-bar-wrap">
         <h3>Next token probabilities (top 10)</h3>
         <div id="prob-bars"></div>
+      </div>
+    </div>
+    <div id="beam-canvas-wrap" style="display:none;" class="card">
+      <h3 style="font-size:0.9rem;color:#8b949e;margin-bottom:8px;">Beam Search Tree</h3>
+      <canvas id="beam-canvas" width="740" height="320"></canvas>
+      <div style="font-size:0.78rem;color:#484f58;margin-top:6px;">
+        Gold path = highest cumulative log-prob. Grey dashed = pruned beams.
       </div>
     </div>
     <div class="info-box">
@@ -497,17 +735,21 @@
   <div class="panel" id="about">
     <div class="card">
       <h2>About This Tool</h2>
-      <p>An interactive, self-contained HTML visualization of Large Language Model (LLM) internals. No server required — everything runs in your browser.</p>
+      <p>An interactive, self-contained HTML visualization of Large Language Model (LLM) internals. No server required &mdash; everything runs in your browser.</p>
     </div>
     <div class="grid-2">
       <div class="card">
         <h2>Features</h2>
         <ul style="color:#8b949e;font-size:0.9rem;line-height:2;padding-left:20px;">
-          <li><strong style="color:#58a6ff">Tokenizer</strong> — BPE-style token splitting</li>
-          <li><strong style="color:#3fb950">Attention</strong> — Multi-head attention heatmap</li>
-          <li><strong style="color:#ffa657">Transformer</strong> — Interactive architecture diagram</li>
-          <li><strong style="color:#d2a8ff">Embeddings</strong> — 2D PCA word vector visualization</li>
-          <li><strong style="color:#f78166">Generation</strong> — Autoregressive sampling simulation</li>
+          <li><strong style="color:#58a6ff">Tokenizer</strong> &mdash; BPE-style token splitting with quick-example buttons</li>
+          <li><strong style="color:#3fb950">Attention</strong> &mdash; Multi-head attention heatmap (8 sentences, 6 heads)</li>
+          <li><strong style="color:#ffa657">Transformer</strong> &mdash; Interactive architecture diagram</li>
+          <li><strong style="color:#d2a8ff">Embeddings</strong> &mdash; 2D PCA word vector visualization</li>
+          <li><strong style="color:#f78166">Generation</strong> &mdash; Autoregressive sampling simulation</li>
+          <li><strong style="color:#79c0ff">Pos. Encoding</strong> &mdash; Sinusoidal positional encoding heatmap &amp; curves</li>
+          <li><strong style="color:#56d364">Scaled Attn</strong> &mdash; Step-by-step scaled dot-product attention walkthrough</li>
+          <li><strong style="color:#ffa657">Training</strong> &mdash; Pre-training, SFT, and RLHF loss/reward curves with compare overlay</li>
+          <li><strong style="color:#f78166">FFN Neurons</strong> &mdash; Feed-forward layer neuron activations per token and layer</li>
         </ul>
       </div>
       <div class="card">
@@ -521,12 +763,235 @@
           <li>Layer Normalization</li>
           <li>Temperature / Top-p / Top-k sampling</li>
           <li>Autoregressive generation</li>
+          <li>Pre-training / SFT / RLHF</li>
         </ul>
       </div>
     </div>
     <div class="card">
       <h2>Technical Notes</h2>
       <p>This tool uses simulated data to illustrate concepts. Attention weights are generated using deterministic pseudo-random functions seeded by sentence and head index. Embeddings use pre-computed 2D positions that approximate PCA projections of real word2vec/GloVe vectors. Generation uses a curated Markov-like vocabulary with temperature-scaled sampling.</p>
+    </div>
+  </div>
+
+  <!-- ====== POSITIONAL ENCODING PANEL ====== -->
+  <div class="panel" id="posenc">
+    <div class="card">
+      <h2>Positional Encoding</h2>
+      <p>Transformers process all tokens in parallel and have no built-in sense of order. Positional Encoding injects position information into the embeddings using sinusoidal functions at different frequencies.</p>
+    </div>
+    <div class="card">
+      <h2>PE Heatmap (Position &times; Dimension)</h2>
+      <div class="pe-controls">
+        <label>Mode:
+          <select id="pe-mode">
+            <option value="both">Sine + Cosine (interleaved)</option>
+            <option value="sine">Sine channels only</option>
+            <option value="cosine">Cosine channels only</option>
+          </select>
+        </label>
+        <label>Max positions: <input type="range" id="pe-pos" min="10" max="100" value="50" step="5" /> <span id="pe-pos-val">50</span></label>
+      </div>
+      <canvas id="pe-canvas" width="760" height="280" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <div class="legend" style="margin-top:10px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#ff6600"></div> &minus;1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0d1117;border:1px solid #30363d"></div> 0</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div> +1</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Single Dimension Curve</h2>
+      <p style="font-size:0.82rem;color:#8b949e;margin-bottom:10px;">Select a dimension pair to see its sinusoidal pattern across positions. Low-index dimensions oscillate rapidly; high-index dimensions change slowly.</p>
+      <div class="pe-controls">
+        <label>Dimension i (pair index): <input type="range" id="pe-dim" min="0" max="31" value="0" step="1" /> <span id="pe-dim-val">0</span></label>
+      </div>
+      <canvas id="pe-curve" width="760" height="150" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+    </div>
+    <div class="info-box">
+      <strong>Formula:</strong><br>
+      PE(pos, 2i) &nbsp; = sin(pos / 10000<sup>2i / d<sub>model</sub></sup>)<br>
+      PE(pos, 2i+1) = cos(pos / 10000<sup>2i / d<sub>model</sub></sup>)<br><br>
+      Each dimension uses a different frequency. Dimension 0 completes many cycles; dimension 63 barely moves. The combination produces a unique fingerprint for every position up to ~10,000 tokens.
+    </div>
+  </div>
+
+  <!-- ====== SCALED DOT-PRODUCT ATTENTION PANEL ====== -->
+  <div class="panel" id="sdpa">
+    <div class="card">
+      <h2>Scaled Dot-Product Attention &mdash; Step by Step</h2>
+      <p>Walk through the exact matrix computation for a 3-token input (&ldquo;cat sat mat&rdquo;) with d_k = 4. See how Q, K, V projections produce the final attention output.</p>
+    </div>
+    <div class="card">
+      <div class="step-nav">
+        <button id="sdpa-prev" disabled>&larr; Prev</button>
+        <div class="step-dots" id="sdpa-dots"></div>
+        <span class="step-label" id="sdpa-step-label"></span>
+        <button id="sdpa-next">Next &rarr;</button>
+      </div>
+      <div style="overflow:auto;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:16px;">
+        <canvas id="sdpa-canvas" width="760" height="300"></canvas>
+      </div>
+      <div id="sdpa-formula" class="info-box" style="margin-top:12px;font-family:monospace;"></div>
+    </div>
+    <div class="info-box">
+      <strong>Attention(Q, K, V) = softmax(QK<sup>T</sup> / &radic;d_k) &middot; V</strong><br>
+      Queries (Q) ask &ldquo;what am I looking for?&rdquo;. Keys (K) answer &ldquo;what do I represent?&rdquo;. Values (V) carry the actual information passed forward. Dividing by &radic;d_k prevents excessively large dot products that would make softmax gradients vanish.
+    </div>
+  </div>
+
+  <!-- ====== TRAINING PANEL ====== -->
+  <div class="panel" id="training">
+    <div class="card">
+      <h2>LLM Training Pipeline</h2>
+      <p>Modern LLMs are built through three distinct training phases. Click each phase to see its loss/reward curve and learn what happens at each stage.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:14px;">
+        <div class="phase-tabs" style="margin-bottom:0;">
+          <button class="phase-tab active" data-phase="pretrain">&#x2460; Pre-training</button>
+          <button class="phase-tab" data-phase="sft">&#x2461; Supervised Fine-tuning (SFT)</button>
+          <button class="phase-tab" data-phase="rlhf">&#x2462; RLHF / DPO</button>
+          <button class="phase-tab" data-phase="gradflow">&#x2463; Gradient Flow</button>
+          <button class="phase-tab" data-phase="scaling">&#x2464; Scaling Laws</button>
+        </div>
+        <button id="train-compare">Compare All</button>
+      </div>
+      <canvas id="train-canvas" width="760" height="300" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <!-- Gradient Flow controls: shown only in gradflow tab -->
+      <div id="grad-controls" style="display:none;margin-bottom:10px;flex-wrap:wrap;gap:14px;align-items:center;">
+        <label style="font-size:0.85rem;color:#8b949e;">
+          <input type="checkbox" id="grad-residual" checked /> With Residual Connections
+        </label>
+        <label style="font-size:0.85rem;color:#8b949e;">Learning Rate:
+          <input type="range" id="grad-lr" min="1" max="20" value="3" step="1" />
+          <span id="grad-lr-val" style="color:#58a6ff;font-weight:700;">0.003</span>
+        </label>
+      </div>
+      <canvas id="grad-canvas" width="760" height="300" style="display:none;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <canvas id="scaling-canvas" width="760" height="300" style="display:none;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2 id="phase-title">Pre-training</h2>
+        <p id="phase-text" style="font-size:0.88rem;color:#8b949e;line-height:1.7;">Train on hundreds of billions of tokens from the web, books, and code. The model learns language structure, factual knowledge, and basic reasoning via next-token prediction. Loss typically starts at 10&ndash;12 and converges around 2&ndash;3.</p>
+      </div>
+      <div class="card">
+        <h2>Scale Reference</h2>
+        <table style="width:100%;font-size:0.82rem;border-collapse:collapse;color:#8b949e;">
+          <thead><tr style="color:#58a6ff;border-bottom:1px solid #30363d;">
+            <th style="text-align:left;padding:5px 8px;">Model</th>
+            <th style="text-align:center;padding:5px 8px;">Params</th>
+            <th style="text-align:center;padding:5px 8px;">Tokens</th>
+            <th style="text-align:center;padding:5px 8px;">Context</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #21262d;"><td style="padding:5px 8px;">GPT-2</td><td style="text-align:center;padding:5px 8px;">1.5B</td><td style="text-align:center;padding:5px 8px;">40B</td><td style="text-align:center;padding:5px 8px;">1k</td></tr>
+            <tr style="border-bottom:1px solid #21262d;"><td style="padding:5px 8px;">LLaMA-7B</td><td style="text-align:center;padding:5px 8px;">7B</td><td style="text-align:center;padding:5px 8px;">1T</td><td style="text-align:center;padding:5px 8px;">4k</td></tr>
+            <tr style="border-bottom:1px solid #21262d;"><td style="padding:5px 8px;">LLaMA-3-70B</td><td style="text-align:center;padding:5px 8px;">70B</td><td style="text-align:center;padding:5px 8px;">15T</td><td style="text-align:center;padding:5px 8px;">128k</td></tr>
+            <tr><td style="padding:5px 8px;">GPT-4 (est.)</td><td style="text-align:center;padding:5px 8px;">~1.76T</td><td style="text-align:center;padding:5px 8px;">~13T</td><td style="text-align:center;padding:5px 8px;">128k</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>RLHF (Reinforcement Learning from Human Feedback):</strong> Human raters compare pairs of model outputs and mark which is better. A reward model is trained on these preferences. PPO then optimizes the policy to maximize reward while a KL penalty prevents it from drifting too far from the SFT baseline. DPO achieves a similar result without a separate reward model.<br><br>
+      <strong>Key insight:</strong> Each stage builds on the previous &mdash; pre-training provides general knowledge, SFT teaches the format, RLHF aligns values.
+    </div>
+  </div>
+
+  <!-- ====== FFN NEURONS PANEL ====== -->
+  <div class="panel" id="ffn">
+    <div class="card">
+      <h2>Feed-Forward Network (FFN) Neurons</h2>
+      <p>Each Transformer layer contains a 2-layer FFN: FFN(x) = max(0, xW&#x2081;+b&#x2081;)W&#x2082;+b&#x2082;. The inner layer expands to 4&times; d_model. Hover over neurons to see their activation for each input token.</p>
+    </div>
+    <div class="card">
+      <div class="ffn-input-row">
+        <label>Input token:
+          <select id="ffn-token">
+            <option value="0">cat</option>
+            <option value="1">sat</option>
+            <option value="2">mat</option>
+            <option value="3">king</option>
+            <option value="4">queen</option>
+            <option value="5">neural</option>
+            <option value="6">model</option>
+          </select>
+        </label>
+        <label>Layer:
+          <select id="ffn-layer">
+            <option value="0">Layer 1 (early)</option>
+            <option value="1">Layer 6 (middle)</option>
+            <option value="2">Layer 12 (late)</option>
+          </select>
+        </label>
+        <label>Neurons shown: <input type="range" id="ffn-n" min="8" max="32" value="16" step="4" /> <span id="ffn-n-val">16</span></label>
+      </div>
+      <canvas id="ffn-canvas" width="760" height="320" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <div id="ffn-hover-info" style="margin-top:8px;min-height:24px;font-size:0.82rem;color:#8b949e;padding:6px 10px;background:#0d1117;border:1px solid #30363d;border-radius:6px;">
+        Hover a neuron bar to see its pre/post-activation value.
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Architecture</h2>
+        <ul style="color:#8b949e;font-size:0.88rem;line-height:2;padding-left:18px;">
+          <li><strong style="color:#58a6ff">Linear W&#x2081;</strong>: d_model &rarr; 4&times;d_model &nbsp;(expand)</li>
+          <li><strong style="color:#3fb950">ReLU / GeLU</strong>: non-linear activation</li>
+          <li><strong style="color:#ffa657">Linear W&#x2082;</strong>: 4&times;d_model &rarr; d_model &nbsp;(project)</li>
+          <li><strong style="color:#d2a8ff">Residual</strong>: output + input (skip connection)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Neuron Specialization</h2>
+        <p style="font-size:0.88rem;color:#8b949e;line-height:1.7;">Early layers activate on syntactic features (punctuation, word position). Middle layers encode semantic concepts (animal-ness, royalty). Late layers encode task-specific patterns used for prediction. Each neuron acts as a &ldquo;feature detector&rdquo;.</p>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Parameter count:</strong> In GPT-2 base (d_model=768), each FFN layer has 2&times;768&times;3072 = 4.7M parameters. With 12 layers, FFN accounts for ~56M of 117M total parameters &mdash; nearly half the model.
+    </div>
+  </div>
+
+  <!-- ====== LAYERNORM PANEL ====== -->
+  <div class="panel" id="layernorm">
+    <div class="card">
+      <h2>Layer Normalization Explorer</h2>
+      <p>Step through the LayerNorm operation: mean subtraction, variance normalization, then learnable scale (&gamma;) and shift (&beta;) parameters.</p>
+    </div>
+    <div class="card">
+      <div class="step-nav">
+        <button id="ln-prev" disabled>&larr; Prev</button>
+        <div class="step-dots" id="ln-dots"></div>
+        <span class="step-label" id="ln-step-label">Step 1: Raw Activations</span>
+        <button id="ln-next">Next &rarr;</button>
+      </div>
+      <div style="margin-bottom:10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+        <label style="font-size:0.85rem;color:#8b949e;">Outlier strength:
+          <input type="range" id="ln-outlier" min="0" max="10" value="0" step="1" />
+          <span id="ln-outlier-val" style="color:#58a6ff;font-weight:700;">0</span>
+        </label>
+        <label style="font-size:0.85rem;color:#8b949e;">Placement:
+          <select id="ln-placement">
+            <option value="post">Post-LN (original Transformer)</option>
+            <option value="pre">Pre-LN (modern GPT-style)</option>
+          </select>
+        </label>
+      </div>
+      <canvas id="ln-canvas" width="760" height="300" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      <div id="ln-formula" class="info-box" style="margin-top:12px;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;"></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Before vs After</h2>
+        <canvas id="ln-compare" width="360" height="200" style="display:block;background:#0d1117;border:1px solid #30363d;border-radius:8px;"></canvas>
+      </div>
+      <div class="card">
+        <h2 id="ln-placement-title">Post-LN (Original)</h2>
+        <p id="ln-placement-text" style="font-size:0.88rem;color:#8b949e;line-height:1.7;">The original Transformer applies LayerNorm <em>after</em> the sublayer and residual add: <code>LN(x + Sublayer(x))</code>. This was found to make training unstable with large learning rates, requiring careful warm-up schedules.</p>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Formula:</strong> LN(x) = &gamma; &sdot; (x &minus; &mu;) / &radic;(&sigma;&sup2; + &epsilon;) + &beta;<br>
+      where &mu; = mean(x), &sigma;&sup2; = variance(x), &gamma; and &beta; are learned per-dimension. &epsilon; = 1e&minus;5 prevents division by zero.
     </div>
   </div>
 
@@ -542,7 +1007,8 @@ function seededRand(seed) {
   return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; };
 }
 
-function softmax(arr, temp = 1) {
+function softmax(arr, temp) {
+  if (temp === undefined) temp = 1;
   const max = Math.max(...arr);
   const exp = arr.map(x => Math.exp((x - max) / temp));
   const sum = exp.reduce((a, b) => a + b, 0);
@@ -560,7 +1026,9 @@ function lerpColor(c1, c2, t) {
   return c1.map((v, i) => Math.round(v + (c2[i] - v) * t));
 }
 
-function rgbStr(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+function rgbStr(rgb) { return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')'; }
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
 /* ================================================================
    NAV
@@ -571,9 +1039,13 @@ document.querySelectorAll('#nav button').forEach(btn => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.panel).classList.add('active');
-    if (btn.dataset.panel === 'attention') drawAttention();
+    if (btn.dataset.panel === 'attention')  drawAttention();
     if (btn.dataset.panel === 'transformer') drawTransformer();
     if (btn.dataset.panel === 'embeddings') drawEmbeddings();
+    if (btn.dataset.panel === 'posenc')     initPosEnc();
+    if (btn.dataset.panel === 'sdpa')       initSDPA();
+    if (btn.dataset.panel === 'training')   drawTraining();
+    if (btn.dataset.panel === 'layernorm')  initLayerNorm();
   });
 });
 
@@ -590,12 +1062,19 @@ const BPE_VOCAB = [
   'mat', 'loves', 'playing', 'piano', 'every', 'day', 'bank', 'guarantee',
   'deposits', 'time', 'flies', 'like', 'arrow', 'fruit', 'banana',
   'future', 'artificial', 'intel', 'ligence', 'machine', 'learning',
-  'deep', 'neural', 'network', 'trans', 'former', 'attention', 'token',
+  'deep', 'neural', 'network', 'trans', 'form', 'former', 'attention', 'token',
   'model', 'language', 'large', 'she', 'he', 'they', 'we', 'you', 'it',
   'in', 'on', 'at', 'to', 'of', 'with', 'by', 'from', 'up', 'about',
   'into', 'through', 'during', 'before', 'after', 'above', 'below',
   'ation', 'ing', 'ness', 'ment', 'er', 'est', 'ly', 'ful', 'less',
   'un', 're', 'pre', 'dis', 'mis', 'non', 'anti', 'inter', 'super',
+  'billion', 'trillion', 'param', 'eter', 'context', 'window', 'gradient',
+  'descent', 'optim', 'izer', 'back', 'prop', 'activ', 'relu', 'norm',
+  'aliz', 'weight', 'bias', 'layer', 'head', 'embed', 'ding', 'vocab',
+  'ulary', 'softmax', 'logit', 'prob', 'sample', 'infer', 'ence', 'generat',
+  'ion', 'prompt', 'complet', 'chat', 'assist', 'human', 'response',
+  'input', 'output', 'text', 'image', 'code', 'math', 'science', 'data',
+  'train', 'fine', 'tune', 'loss', 'cross', 'entropy', 'accuracy',
 ];
 
 function tokenize(text) {
@@ -638,20 +1117,138 @@ function renderTokens() {
   });
   tokens.forEach((t, i) => {
     const span = document.createElement('span');
-    span.className = `token tc${tokenIds[i] % 8}`;
+    span.className = 'token tc' + (tokenIds[i] % 8);
     span.textContent = JSON.stringify(t).slice(1, -1); // escape control chars
-    span.title = `Token ID: ${tokenIds[i] + 100}`;
+    span.title = 'Token ID: ' + (tokenIds[i] + 100);
     display.appendChild(span);
   });
   document.getElementById('tok-count').textContent = tokens.length;
   document.getElementById('char-count').textContent = text.length;
   document.getElementById('avg-chars').textContent = tokens.length ? (text.length / tokens.length).toFixed(2) : '0';
   document.getElementById('uniq-count').textContent = Object.keys(uniqueMap).length;
-  ids.textContent = tokenIds.map((id, i) => `[${id + 100}]`).join(' ');
+  ids.textContent = tokenIds.map((id) => '[' + (id + 100) + ']').join(' ');
 }
 
 document.getElementById('tok-input').addEventListener('input', renderTokens);
 renderTokens();
+
+/* ================================================================
+   BPE TAB SWITCHING
+   ================================================================ */
+document.getElementById('bpe-tab-tokenize').addEventListener('click', function() {
+  this.classList.add('active');
+  document.getElementById('bpe-tab-process').classList.remove('active');
+  document.getElementById('bpe-pane-tokenize').style.display = '';
+  document.getElementById('bpe-pane-process').style.display = 'none';
+  document.getElementById('bpe-tok-ids-card').style.display = '';
+});
+document.getElementById('bpe-tab-process').addEventListener('click', function() {
+  this.classList.add('active');
+  document.getElementById('bpe-tab-tokenize').classList.remove('active');
+  document.getElementById('bpe-pane-tokenize').style.display = 'none';
+  document.getElementById('bpe-pane-process').style.display = '';
+  document.getElementById('bpe-tok-ids-card').style.display = 'none';
+  renderBPEStep();
+});
+
+/* ================================================================
+   BPE PROCESS ANIMATOR
+   ================================================================ */
+const BPE_MERGE_STEPS = [
+  { pair:['e','s'],       merged:'es',       desc:'Merge ("e","s") \u2192 "es" \u2014 appears in "newest" and "widest"' },
+  { pair:['es','t'],      merged:'est',      desc:'Merge ("es","t") \u2192 "est" \u2014 appears in "newest" and "widest"' },
+  { pair:['l','o'],       merged:'lo',       desc:'Merge ("l","o") \u2192 "lo" \u2014 appears in "low" and "lower"' },
+  { pair:['lo','w'],      merged:'low',      desc:'Merge ("lo","w") \u2192 "low" \u2014 appears in "low" and "lower"' },
+  { pair:['n','e'],       merged:'ne',       desc:'Merge ("n","e") \u2192 "ne" \u2014 appears in "newest"' },
+  { pair:['ne','w'],      merged:'new',      desc:'Merge ("ne","w") \u2192 "new" \u2014 appears in "newest"' },
+  { pair:['new','est'],   merged:'newest',   desc:'Merge ("new","est") \u2192 "newest"' },
+  { pair:['w','i'],       merged:'wi',       desc:'Merge ("w","i") \u2192 "wi" \u2014 appears in "widest"' },
+  { pair:['wi','d'],      merged:'wid',      desc:'Merge ("wi","d") \u2192 "wid"' },
+  { pair:['wid','est'],   merged:'widest',   desc:'Merge ("wid","est") \u2192 "widest"' },
+  { pair:['low','e'],     merged:'lowe',     desc:'Merge ("low","e") \u2192 "lowe"' },
+  { pair:['lowe','r'],    merged:'lower',    desc:'Merge ("lowe","r") \u2192 "lower"' },
+  { pair:['low','</w>'],  merged:'low</w>',  desc:'Merge ("low","</w>") \u2014 marks end of standalone "low"' },
+];
+
+let bpeStep = 0;
+
+function bpeGetCorpus(upToStep) {
+  let corpus = [
+    ['l','o','w','</w>'],
+    ['l','o','w','e','r','</w>'],
+    ['n','e','w','e','s','t','</w>'],
+    ['w','i','d','e','s','t','</w>'],
+  ];
+  for (let s = 0; s < upToStep; s++) {
+    const [a, b] = BPE_MERGE_STEPS[s].pair;
+    const merged = BPE_MERGE_STEPS[s].merged;
+    corpus = corpus.map(word => {
+      const out = [];
+      let i = 0;
+      while (i < word.length) {
+        if (word[i] === a && i + 1 < word.length && word[i+1] === b) {
+          out.push(merged); i += 2;
+        } else { out.push(word[i]); i++; }
+      }
+      return out;
+    });
+  }
+  return corpus;
+}
+
+function bpeGetVocab(upToStep) {
+  const vocab = new Set(['l','o','w','</w>','e','r','n','s','t','i','d']);
+  for (let s = 0; s < upToStep; s++) vocab.add(BPE_MERGE_STEPS[s].merged);
+  return Array.from(vocab);
+}
+
+function renderBPEStep() {
+  const corpus = bpeGetCorpus(bpeStep);
+  const vocab  = bpeGetVocab(bpeStep);
+  const nextMerge = bpeStep < BPE_MERGE_STEPS.length ? BPE_MERGE_STEPS[bpeStep] : null;
+
+  const corpusEl = document.getElementById('bpe-corpus');
+  const WORD_NAMES = ['low', 'lower', 'newest', 'widest'];
+  corpusEl.innerHTML = corpus.map((word, wi) => {
+    const parts = word.map((tok, ti) => {
+      const isFirst  = nextMerge && tok === nextMerge.pair[0] && ti + 1 < word.length && word[ti+1] === nextMerge.pair[1];
+      const isSecond = nextMerge && tok === nextMerge.pair[1] && ti > 0 && word[ti-1] === nextMerge.pair[0];
+      if (isFirst || isSecond) return '<span class="bpe-pair-highlight">' + tok + '</span>';
+      return '<span style="color:#e6edf3;">' + tok + '</span>';
+    });
+    return '<span style="color:#484f58;margin-right:4px;">' + WORD_NAMES[wi] + ':</span> ' + parts.join(' ');
+  }).join('<br>');
+
+  const vocabEl = document.getElementById('bpe-vocab');
+  const newestToken = bpeStep > 0 ? BPE_MERGE_STEPS[bpeStep-1].merged : null;
+  vocabEl.innerHTML = vocab.map(tok =>
+    '<span class="bpe-vocab-token' + (tok === newestToken ? ' new' : '') + '">' + tok + '</span>'
+  ).join('');
+
+  document.getElementById('bpe-vocab-count').textContent = vocab.length;
+  document.getElementById('bpe-step-counter').textContent = 'Step ' + bpeStep + ' / ' + BPE_MERGE_STEPS.length;
+  document.getElementById('bpe-desc').textContent = bpeStep === 0
+    ? 'Initial state: each word split into individual characters. End-of-word </w> marker added.'
+    : BPE_MERGE_STEPS[bpeStep - 1].desc;
+  document.getElementById('bpe-next').disabled = bpeStep >= BPE_MERGE_STEPS.length;
+}
+
+document.getElementById('bpe-reset').addEventListener('click', () => { bpeStep = 0; renderBPEStep(); });
+document.getElementById('bpe-next').addEventListener('click', () => {
+  if (bpeStep < BPE_MERGE_STEPS.length) { bpeStep++; renderBPEStep(); }
+});
+
+/* ================================================================
+   CAUSAL MASK TOGGLE
+   ================================================================ */
+let attnCausalMask = false;
+
+document.getElementById('attn-causal-btn').addEventListener('click', function() {
+  attnCausalMask = !attnCausalMask;
+  this.classList.toggle('active', attnCausalMask);
+  document.getElementById('attn-causal-info').style.display = attnCausalMask ? 'block' : 'none';
+  drawAttention();
+});
 
 /* ================================================================
    ATTENTION
@@ -661,6 +1258,10 @@ const ATTN_SENTENCES = [
   ['She', 'loves', 'playing', 'the', 'piano', 'every', 'day'],
   ['The', 'bank', 'can', 'guarantee', 'deposits'],
   ['Time', 'flies', 'like', 'an', 'arrow', 'fruit', 'flies', 'like', 'a', 'banana'],
+  ['The', 'dog', 'that', 'chased', 'the', 'cat', 'was', 'big'],
+  ['She', 'gave', 'him', 'the', 'book', 'from', 'the', 'shelf'],
+  ['Trans', 'form', 'ers', 'learn', 'attention', 'weights', 'auto'],
+  ['The', 'man', 'saw', 'her', 'with', 'a', 'telescope'],
 ];
 
 function drawAttention() {
@@ -711,7 +1312,7 @@ function drawAttention() {
     return rgbStr(lerpColor(colHi, colMax, (v - 0.75) / 0.25));
   }
 
-  ctx.font = `${Math.max(10, cellSize * 0.3)}px monospace`;
+  ctx.font = Math.max(10, cellSize * 0.3) + 'px monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
@@ -740,12 +1341,30 @@ function drawAttention() {
       // value text
       if (cellSize > 32) {
         const brightness = v > 0.5 ? 0 : 255;
-        ctx.fillStyle = `rgba(${brightness},${brightness},${brightness},0.7)`;
+        ctx.fillStyle = 'rgba(' + brightness + ',' + brightness + ',' + brightness + ',0.7)';
         ctx.textAlign = 'center';
         ctx.fillText((v * 100).toFixed(0) + '%', x + cellSize / 2, y + cellSize / 2);
       }
     });
   });
+
+  // Causal mask overlay
+  if (attnCausalMask) {
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const x = margin + j * cellSize;
+        const y = margin + i * cellSize;
+        ctx.fillStyle = 'rgba(247, 129, 102, 0.45)';
+        ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+        ctx.strokeStyle = 'rgba(247, 129, 102, 0.7)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x + 2, y + 2);
+        ctx.lineTo(x + cellSize - 3, y + cellSize - 3);
+        ctx.stroke();
+      }
+    }
+  }
 }
 
 document.getElementById('attn-sentence').addEventListener('change', drawAttention);
@@ -756,19 +1375,91 @@ document.getElementById('attn-temp').addEventListener('input', function() {
 });
 
 /* ================================================================
+   ATTENTION HOVER
+   ================================================================ */
+(function() {
+  const wrap = document.getElementById('attn-canvas-wrap');
+  const tooltip = document.getElementById('attn-tooltip');
+  const hoverInfo = document.getElementById('attn-hover-info');
+
+  document.getElementById('attn-canvas').addEventListener('mousemove', function(e) {
+    const rect = this.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const sentIdx = +document.getElementById('attn-sentence').value;
+    const headIdx = +document.getElementById('attn-head').value;
+    const temp    = +document.getElementById('attn-temp').value / 10;
+    const words   = ATTN_SENTENCES[sentIdx];
+    const n = words.length;
+    const cellSize = Math.min(56, Math.floor((Math.min(window.innerWidth - 100, 700)) / (n + 2)));
+    const margin = 60;
+
+    const col = Math.floor((mx - margin) / cellSize);
+    const row = Math.floor((my - margin) / cellSize);
+
+    if (col < 0 || col >= n || row < 0 || row >= n) {
+      tooltip.style.display = 'none';
+      hoverInfo.textContent = 'Hover over a cell to see attention details.';
+      return;
+    }
+
+    // re-compute scores for this state
+    const rng = seededRand(sentIdx * 37 + headIdx * 13);
+    const scores = [];
+    for (let i = 0; i < n; i++) {
+      let r = [];
+      for (let j = 0; j < n; j++) {
+        const dist = Math.abs(i - j);
+        const base = j <= i ? rng() * 3 - dist * 0.3 : -10;
+        r.push(base);
+      }
+      scores.push(softmax(r, temp));
+    }
+
+    // Detect masked cell
+    if (attnCausalMask && col > row) {
+      tooltip.textContent = 'Masked \u2014 cannot attend to future tokens';
+      tooltip.style.display = 'block';
+      tooltip.style.left = (mx + 12) + 'px';
+      tooltip.style.top  = (my - 28) + 'px';
+      hoverInfo.textContent = 'Upper triangle: masked out (set to -\u221E before softmax)';
+      return;
+    }
+
+    const val = scores[row][col];
+    tooltip.style.display = 'block';
+    tooltip.style.left = (mx + 12) + 'px';
+    tooltip.style.top  = (my - 28) + 'px';
+    tooltip.textContent = '"' + words[row] + '" \u2192 "' + words[col] + '": ' + (val * 100).toFixed(1) + '%';
+
+    // top attended for this row
+    const rowScores = scores[row].map((v, j) => ({ word: words[j], v }))
+      .sort((a, b) => b.v - a.v).slice(0, 3);
+    hoverInfo.innerHTML = '<strong style="color:#58a6ff">"' + words[row] + '"</strong> top attention → ' +
+      rowScores.map(s => '"' + s.word + '" <strong style="color:#3fb950">' + (s.v * 100).toFixed(1) + '%</strong>').join('  ·  ');
+  });
+
+  document.getElementById('attn-canvas').addEventListener('mouseleave', function() {
+    tooltip.style.display = 'none';
+    hoverInfo.textContent = 'Hover over a cell to see attention details.';
+  });
+})();
+
+/* ================================================================
    TRANSFORMER ARCHITECTURE
    ================================================================ */
 const TF_BLOCKS = [
   { id: 'input',    x: 300, y: 500, w: 160, h: 36, color: '#3fb950', label: 'Input Tokens', info: { title: 'Input Tokens', text: 'Raw text is split into tokens (sub-words) by the tokenizer. Each token is an integer index into the vocabulary (e.g., 50,257 tokens for GPT-2).' } },
   { id: 'embed',    x: 300, y: 450, w: 160, h: 36, color: '#58a6ff', label: 'Token Embedding', info: { title: 'Token Embedding', text: 'Each token ID is mapped to a dense vector of dimension d_model (e.g., 768 for GPT-2 base). These learned embeddings encode semantic meaning.' } },
   { id: 'posenc',   x: 300, y: 400, w: 160, h: 36, color: '#d2a8ff', label: 'Positional Encoding', info: { title: 'Positional Encoding', text: 'Since Transformers process all tokens in parallel, positional encodings inject sequence order information. Learned or sinusoidal encodings are added to the token embeddings.' } },
-  { id: 'add1',     x: 300, y: 355, w: 160, h: 28, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'Residual connections (x + sublayer(x)) help gradients flow. LayerNorm stabilizes training by normalizing across the feature dimension.' } },
-  { id: 'mha',      x: 300, y: 280, w: 160, h: 60, color: '#ffa657', label: 'Multi-Head\nAttention', info: { title: 'Multi-Head Self-Attention', text: 'Computes attention with H heads: for each head, linear projections Q=xW_Q, K=xW_K, V=xW_V, then Attention(Q,K,V) = softmax(QKᵀ/√d_k)V. Outputs are concatenated and projected.' } },
-  { id: 'add2',     x: 300, y: 242, w: 160, h: 26, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A second residual connection adds the pre-attention input back to the attention output, followed by LayerNorm.' } },
-  { id: 'ffn',      x: 300, y: 170, w: 160, h: 60, color: '#f78166', label: 'Feed-Forward\nNetwork (FFN)', info: { title: 'Feed-Forward Network', text: 'Two linear layers with a non-linearity: FFN(x) = max(0, xW₁+b₁)W₂+b₂. The inner dimension is 4× d_model. This is where most parameters reside.' } },
-  { id: 'add3',     x: 300, y: 132, w: 160, h: 26, color: '#484f58', label: '⊕ Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A third residual connection and LayerNorm after the FFN sublayer.' } },
-  { id: 'repeat',   x: 300, y: 88,  w: 160, h: 26, color: '#21262d', label: '× N Layers', info: { title: 'Stacked Layers', text: 'GPT-2 small: 12 layers. GPT-4: ~96 layers (est.). Each layer refines the token representations, with later layers encoding more abstract concepts.' } },
-  { id: 'lmhead',   x: 300, y: 44,  w: 160, h: 32, color: '#238636', label: 'LM Head → Logits', info: { title: 'Language Model Head', text: 'A final linear layer maps the d_model-dimensional output to vocabulary logits (shape: seq_len × vocab_size). Softmax converts these to probabilities for the next token.' } },
+  { id: 'add1',     x: 300, y: 355, w: 160, h: 28, color: '#484f58', label: '\u2295 Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'Residual connections (x + sublayer(x)) help gradients flow. LayerNorm stabilizes training by normalizing across the feature dimension.' } },
+  { id: 'mha',      x: 300, y: 280, w: 160, h: 60, color: '#ffa657', label: 'Multi-Head\nAttention', info: { title: 'Multi-Head Self-Attention', text: 'Computes attention with H heads: for each head, linear projections Q=xW_Q, K=xW_K, V=xW_V, then Attention(Q,K,V) = softmax(QK\u1D40/\u221Ad_k)V. Outputs are concatenated and projected.' } },
+  { id: 'add2',     x: 300, y: 242, w: 160, h: 26, color: '#484f58', label: '\u2295 Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A second residual connection adds the pre-attention input back to the attention output, followed by LayerNorm.' } },
+  { id: 'ffn',      x: 300, y: 170, w: 160, h: 60, color: '#f78166', label: 'Feed-Forward\nNetwork (FFN)', info: { title: 'Feed-Forward Network', text: 'Two linear layers with a non-linearity: FFN(x) = max(0, xW\u2081+b\u2081)W\u2082+b\u2082. The inner dimension is 4\u00D7 d_model. This is where most parameters reside.' } },
+  { id: 'add3',     x: 300, y: 132, w: 160, h: 26, color: '#484f58', label: '\u2295 Add & Norm', info: { title: 'Residual Add & LayerNorm', text: 'A third residual connection and LayerNorm after the FFN sublayer.' } },
+  { id: 'repeat',   x: 300, y: 88,  w: 160, h: 26, color: '#21262d', label: '\u00D7 N Layers', info: { title: 'Stacked Layers', text: 'GPT-2 small: 12 layers. GPT-4: ~96 layers (est.). Each layer refines the token representations, with later layers encoding more abstract concepts.' } },
+  { id: 'lmhead',   x: 300, y: 44,  w: 160, h: 32, color: '#238636', label: 'LM Head \u2192 Logits', info: { title: 'Language Model Head', text: 'A final linear layer maps the d_model-dimensional output to vocabulary logits (shape: seq_len \u00D7 vocab_size). Softmax converts these to probabilities for the next token.' } },
 ];
 
 const tfCanvas = document.getElementById('tf-canvas');
@@ -796,7 +1487,8 @@ function drawTransformer() {
   // draw residual connections
   tfCtx.strokeStyle = '#484f58';
   tfCtx.lineWidth = 1.5;
-  [[1, 3], [4, 5], [6, 7]].forEach(([from, to]) => {
+  [[1, 3], [4, 5], [6, 7]].forEach(function(pair) {
+    var from = pair[0], to = pair[1];
     const a = TF_BLOCKS[from], b = TF_BLOCKS[to];
     tfCtx.beginPath();
     tfCtx.moveTo(a.x + a.w + 4, a.y + a.h / 2);
@@ -843,7 +1535,7 @@ function drawTransformer() {
   const dimLabels = [
     { y: 338, text: 'd_model = 768' },
     { y: 230, text: 'H heads, d_k = d_model/H' },
-    { y: 150, text: 'd_ff = 4 × d_model' },
+    { y: 150, text: 'd_ff = 4 \u00D7 d_model' },
   ];
   tfCtx.fillStyle = '#484f58';
   tfCtx.font = '11px monospace';
@@ -946,11 +1638,11 @@ function drawEmbeddings() {
   ctx.fillStyle = '#30363d';
   ctx.font = '11px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('← PC1 →', W / 2, H - 6);
+  ctx.fillText('\u2190 PC1 \u2192', W / 2, H - 6);
   ctx.save();
   ctx.translate(12, H / 2);
   ctx.rotate(-Math.PI / 2);
-  ctx.fillText('← PC2 →', 0, 0);
+  ctx.fillText('\u2190 PC2 \u2192', 0, 0);
   ctx.restore();
 
   EMB_WORDS.forEach(w => {
@@ -1033,6 +1725,70 @@ document.getElementById('emb-animate').addEventListener('click', function() {
 });
 
 /* ================================================================
+   EMBEDDINGS ANALOGY + NEAREST NEIGHBOR
+   ================================================================ */
+function embDist(a, b) {
+  return Math.sqrt((a.x2d[0]-b.x2d[0])**2 + (a.x2d[1]-b.x2d[1])**2);
+}
+
+function analogyVector(aW, bW, cW) {
+  const a = EMB_WORDS.find(w => w.word === aW);
+  const b = EMB_WORDS.find(w => w.word === bW);
+  const c = EMB_WORDS.find(w => w.word === cW);
+  if (!a || !b || !c) return null;
+  return { x2d: [a.x2d[0] - b.x2d[0] + c.x2d[0], a.x2d[1] - b.x2d[1] + c.x2d[1]] };
+}
+
+function nearestNeighbors(target, exclude, k) {
+  return EMB_WORDS
+    .filter(w => !exclude.includes(w.word))
+    .map(w => ({ word: w.word, dist: embDist(target, w) }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, k);
+}
+
+document.getElementById('ana-run').addEventListener('click', () => {
+  const aW = document.getElementById('ana-a').value;
+  const bW = document.getElementById('ana-b').value;
+  const cW = document.getElementById('ana-c').value;
+  const result = analogyVector(aW, bW, cW);
+  if (!result) { document.getElementById('ana-result').textContent = 'Word not found in dataset.'; return; }
+  const nn = nearestNeighbors(result, [aW, bW, cW], 5);
+  document.getElementById('ana-result').innerHTML =
+    '<strong style="color:#58a6ff">' + aW + '</strong> &minus; <strong style="color:#f78166">' + bW +
+    '</strong> + <strong style="color:#3fb950">' + cW + '</strong> &asymp; ' +
+    nn.slice(0, 3).map((n, i) => '<strong style="color:' + ['#ffa657','#d2a8ff','#79c0ff'][i] + '">' + n.word + '</strong> (' + n.dist.toFixed(3) + ')').join(',  ');
+});
+
+document.getElementById('emb-canvas').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const W = this.width, H = this.height;
+  let closest = null, minD = Infinity;
+  EMB_WORDS.forEach(w => {
+    const sx = embView.ox + w.x2d[0] * W * embView.scale;
+    const sy = embView.oy + w.x2d[1] * H * embView.scale;
+    const d = Math.hypot(sx - mx, sy - my);
+    if (d < minD) { minD = d; closest = w; }
+  });
+  if (!closest || minD > 30) { document.getElementById('nn-list').innerHTML = ''; return; }
+  const nn = nearestNeighbors(closest, [closest.word], 8);
+  const nnList = document.getElementById('nn-list');
+  nnList.innerHTML = '<span style="font-size:0.82rem;color:#8b949e;">Neighbors of <strong style="color:#58a6ff">' + closest.word + '</strong>:</span> ';
+  nn.forEach(n => {
+    const chip = document.createElement('span');
+    chip.className = 'nn-chip';
+    chip.innerHTML = n.word + ' <span class="nn-dist">' + n.dist.toFixed(3) + '</span>';
+    chip.addEventListener('click', () => {
+      const w = EMB_WORDS.find(x => x.word === n.word);
+      if (w) { embView.ox = 0; embView.oy = 0; embView.scale = 1; drawEmbeddings(); }
+    });
+    nnList.appendChild(chip);
+  });
+});
+
+/* ================================================================
    TEXT GENERATION
    ================================================================ */
 const GEN_VOCAB = {
@@ -1047,6 +1803,54 @@ const GEN_VOCAB = {
     { w: 'unknown',      p: 0.06 },
     { w: 'limitless',    p: 0.05 },
     { w: 'controversial',p: 0.04 },
+  ],
+  'Deep learning models can': [
+    { w: 'recognize',   p: 0.16 },
+    { w: 'generate',    p: 0.15 },
+    { w: 'classify',    p: 0.12 },
+    { w: 'process',     p: 0.11 },
+    { w: 'understand',  p: 0.10 },
+    { w: 'outperform',  p: 0.08 },
+    { w: 'learn',       p: 0.07 },
+    { w: 'predict',     p: 0.07 },
+    { w: 'solve',       p: 0.06 },
+    { w: 'handle',      p: 0.05 },
+  ],
+  'The transformer architecture enables': [
+    { w: 'parallel',    p: 0.18 },
+    { w: 'efficient',   p: 0.16 },
+    { w: 'scalable',    p: 0.13 },
+    { w: 'powerful',    p: 0.11 },
+    { w: 'flexible',    p: 0.09 },
+    { w: 'attention',   p: 0.08 },
+    { w: 'fast',        p: 0.07 },
+    { w: 'robust',      p: 0.06 },
+    { w: 'novel',       p: 0.05 },
+    { w: 'remarkable',  p: 0.04 },
+  ],
+  'Natural language processing has': [
+    { w: 'advanced',    p: 0.20 },
+    { w: 'improved',    p: 0.16 },
+    { w: 'transformed', p: 0.14 },
+    { w: 'evolved',     p: 0.12 },
+    { w: 'enabled',     p: 0.10 },
+    { w: 'changed',     p: 0.08 },
+    { w: 'produced',    p: 0.06 },
+    { w: 'created',     p: 0.05 },
+    { w: 'driven',      p: 0.05 },
+    { w: 'accelerated', p: 0.04 },
+  ],
+  'Large language models are trained on': [
+    { w: 'massive',      p: 0.18 },
+    { w: 'diverse',      p: 0.16 },
+    { w: 'vast',         p: 0.14 },
+    { w: 'high-quality', p: 0.12 },
+    { w: 'trillions',    p: 0.10 },
+    { w: 'curated',      p: 0.08 },
+    { w: 'internet-scale', p: 0.07 },
+    { w: 'multilingual', p: 0.06 },
+    { w: 'structured',   p: 0.05 },
+    { w: 'text',         p: 0.04 },
   ],
   DEFAULT_NEXT: [
     [
@@ -1121,15 +1925,14 @@ function updateProbBars(probs) {
   const container = document.getElementById('prob-bars');
   container.innerHTML = '';
   const sorted = probs.slice().sort((a, b) => b.prob - a.prob).slice(0, 10);
-  const maxP = sorted[0]?.prob || 1;
+  const maxP = sorted[0] ? sorted[0].prob : 1;
   sorted.forEach(item => {
     const row = document.createElement('div');
     row.className = 'prob-bar';
-    row.innerHTML = `
-      <span class="word">${item.w}</span>
-      <div class="bar-bg"><div class="bar-fill" style="width:${(item.prob/maxP*100).toFixed(1)}%"></div></div>
-      <span class="pct">${(item.prob*100).toFixed(1)}%</span>
-    `;
+    row.innerHTML =
+      '<span class="word">' + item.w + '</span>' +
+      '<div class="bar-bg"><div class="bar-fill" style="width:' + (item.prob / maxP * 100).toFixed(1) + '%"></div></div>' +
+      '<span class="pct">' + (item.prob * 100).toFixed(1) + '%</span>';
     container.appendChild(row);
   });
 }
@@ -1192,12 +1995,13 @@ document.getElementById('gen-start').addEventListener('click', startGeneration);
 
 // slider display updates
 [
-  ['sl-temp',   v => (v/10).toFixed(1), 'sl-temp-val'],
-  ['sl-topp',   v => (v/100).toFixed(2), 'sl-topp-val'],
-  ['sl-topk',   v => v,                 'sl-topk-val'],
-  ['sl-maxtok', v => v,                 'sl-maxtok-val'],
-  ['sl-speed',  v => v,                 'sl-speed-val'],
-].forEach(([id, fmt, valId]) => {
+  ['sl-temp',   function(v) { return (v/10).toFixed(1); }, 'sl-temp-val'],
+  ['sl-topp',   function(v) { return (v/100).toFixed(2); }, 'sl-topp-val'],
+  ['sl-topk',   function(v) { return v; },                 'sl-topk-val'],
+  ['sl-maxtok', function(v) { return v; },                 'sl-maxtok-val'],
+  ['sl-speed',  function(v) { return v; },                 'sl-speed-val'],
+].forEach(function(entry) {
+  var id = entry[0], fmt = entry[1], valId = entry[2];
   const el = document.getElementById(id);
   el.addEventListener('input', function() {
     document.getElementById(valId).textContent = fmt(this.value);
@@ -1205,8 +2009,1247 @@ document.getElementById('gen-start').addEventListener('click', startGeneration);
 });
 
 /* ================================================================
+   BEAM SEARCH VISUALIZER
+   ================================================================ */
+function buildBeamTree(promptKey, beamWidth) {
+  const rng = seededRand(promptKey.length * 31 + beamWidth * 7);
+  const STEP_WORDS = [
+    ['bright','uncertain','transforming','complex','rapidly','here','exciting'],
+    ['and','will','that','a','the','can','to'],
+    ['we','humans','models','systems','society','world','continue'],
+    ['learning','capable','more','powerful','new','faster','smarter'],
+    ['tasks','problems','domains','fields','aspects','areas','ways'],
+  ];
+
+  let beams = STEP_WORDS[0].slice(0, beamWidth).map((w, i) => ({
+    tokens: [w],
+    cumLogp: Math.log(0.18 - i * 0.03 + rng() * 0.01),
+  }));
+  const levels = [beams.map(b => ({ token: b.tokens[0], cumLogp: b.cumLogp, pruned: false, parentIdx: 0 }))];
+
+  for (let step = 1; step < 5; step++) {
+    const candidates = [];
+    beams.forEach((beam, bi) => {
+      STEP_WORDS[step].slice(0, beamWidth + 1).forEach((w, wi) => {
+        const lp = Math.log(0.15 - wi * 0.015 + rng() * 0.01);
+        candidates.push({ tokens: [...beam.tokens, w], cumLogp: beam.cumLogp + lp, parentIdx: bi });
+      });
+    });
+    candidates.sort((a, b) => b.cumLogp - a.cumLogp);
+    const kept   = candidates.slice(0, beamWidth);
+    const pruned = candidates.slice(beamWidth, beamWidth * 2);
+    const levelNodes = kept.map(c => ({
+      token: c.tokens[c.tokens.length-1], cumLogp: c.cumLogp, pruned: false, parentIdx: c.parentIdx
+    }));
+    pruned.forEach(c => levelNodes.push({
+      token: c.tokens[c.tokens.length-1], cumLogp: c.cumLogp, pruned: true, parentIdx: c.parentIdx
+    }));
+    levels.push(levelNodes);
+    beams = kept;
+  }
+  return { levels };
+}
+
+function drawBeamTree() {
+  const beamWidth = +document.getElementById('sl-beam').value;
+  if (beamWidth === 1) { document.getElementById('beam-canvas-wrap').style.display = 'none'; return; }
+  document.getElementById('beam-canvas-wrap').style.display = '';
+
+  const prompt = document.getElementById('gen-prompt').value;
+  const tree   = buildBeamTree(prompt, beamWidth);
+  const levels = tree.levels;
+
+  const canvas = document.getElementById('beam-canvas');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const nLevels = levels.length;
+  const stepX = W / (nLevels + 1);
+  const winnerColor = '#ffa657';
+  const activeColor = '#58a6ff';
+  const prunedColor = '#30363d';
+
+  const nodePos = levels.map((level, li) => {
+    const x = stepX * (li + 1);
+    const total = level.length;
+    return level.map((n, ni) => ({ x, y: H * (ni + 1) / (total + 1), ...n }));
+  });
+
+  // Draw connections
+  nodePos.forEach((level, li) => {
+    if (li === 0) return;
+    level.forEach(node => {
+      const parentList = nodePos[li-1];
+      const parent = parentList[node.parentIdx] || parentList[0];
+      const isWinner = li === nLevels - 1 && !node.pruned;
+      ctx.strokeStyle = node.pruned ? prunedColor : (isWinner ? winnerColor : activeColor + '88');
+      ctx.lineWidth = node.pruned ? 1 : 2;
+      ctx.setLineDash(node.pruned ? [3,3] : []);
+      ctx.beginPath(); ctx.moveTo(parent.x, parent.y); ctx.lineTo(node.x, node.y); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  });
+
+  // Draw nodes
+  nodePos.forEach((level, li) => {
+    level.forEach(node => {
+      const r   = node.pruned ? 12 : 16;
+      const col = node.pruned ? prunedColor : (li === nLevels-1 && !node.pruned ? winnerColor : activeColor);
+      ctx.beginPath(); ctx.arc(node.x, node.y, r, 0, Math.PI*2);
+      ctx.fillStyle = col + (node.pruned ? '44' : '33'); ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = node.pruned ? 1 : 2; ctx.stroke();
+      ctx.fillStyle = node.pruned ? '#484f58' : '#e6edf3';
+      ctx.font = (node.pruned ? '9' : '10') + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(node.token, node.x, node.y + 3);
+      ctx.fillStyle = '#484f58'; ctx.font = '8px monospace';
+      ctx.fillText(node.cumLogp.toFixed(1), node.x, node.y + r + 10);
+    });
+  });
+
+  ctx.fillStyle = winnerColor; ctx.font = 'bold 11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Best beam (highest cumulative log-prob)', 6, 14);
+}
+
+document.getElementById('sl-beam').addEventListener('change', drawBeamTree);
+document.getElementById('gen-start').addEventListener('click', () => setTimeout(drawBeamTree, 100));
+
+/* ================================================================
+   TOKENIZER EXAMPLE BUTTONS
+   ================================================================ */
+document.querySelectorAll('.example-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const text = btn.dataset.text;
+    if (target) {
+      document.getElementById(target).value = text;
+    } else {
+      document.getElementById('tok-input').value = text;
+      renderTokens();
+    }
+  });
+});
+
+/* ================================================================
+   POSITIONAL ENCODING
+   ================================================================ */
+const PE_DMODEL = 64;
+
+function peValue(pos, dim, mode) {
+  const i = Math.floor(dim / 2);
+  const base = Math.pow(10000, (2 * i) / PE_DMODEL);
+  if (mode === 'sine') return Math.sin(pos / base);
+  if (mode === 'cosine') return Math.cos(pos / base);
+  // both interleaved
+  return (dim % 2 === 0) ? Math.sin(pos / base) : Math.cos(pos / base);
+}
+
+function peColor(val) {
+  // val: -1..+1. negative=orange(#ff6600), zero=dark(#0d1117), positive=blue(#58a6ff)
+  const t = (val + 1) / 2; // 0..1
+  let r, g, b;
+  if (t < 0.5) {
+    const tt = t * 2;
+    r = Math.round(255 + (13 - 255) * tt);
+    g = Math.round(102 + (17 - 102) * tt);
+    b = Math.round(0   + (23 - 0)   * tt);
+  } else {
+    const tt = (t - 0.5) * 2;
+    r = Math.round(13  + (88  - 13)  * tt);
+    g = Math.round(17  + (166 - 17)  * tt);
+    b = Math.round(23  + (255 - 23)  * tt);
+  }
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+
+function drawPosEnc() {
+  const canvas = document.getElementById('pe-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const mode   = document.getElementById('pe-mode').value;
+  const maxPos = +document.getElementById('pe-pos').value;
+  const dims   = PE_DMODEL;
+
+  const padL = 46, padB = 28, padT = 10, padR = 10;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const cellW  = chartW / dims;
+  const cellH  = chartH / maxPos;
+
+  for (let pos = 0; pos < maxPos; pos++) {
+    for (let d = 0; d < dims; d++) {
+      const val = peValue(pos, d, mode);
+      ctx.fillStyle = peColor(val);
+      ctx.fillRect(padL + d * cellW, padT + pos * cellH, Math.max(1, cellW - 0.5), Math.max(1, cellH - 0.5));
+    }
+  }
+
+  // Y axis labels
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'right';
+  for (let p = 0; p <= maxPos; p += Math.max(1, Math.floor(maxPos / 8))) {
+    const y = padT + p * cellH;
+    ctx.fillText(p, padL - 4, y + 3);
+  }
+
+  // X axis labels
+  ctx.textAlign = 'center';
+  [0, 16, 32, 48, 63].forEach(d => {
+    ctx.fillText(d, padL + d * cellW + cellW / 2, H - 8);
+  });
+
+  // Axis titles
+  ctx.fillStyle = '#484f58';
+  ctx.font = '11px "Segoe UI",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Dimension Index \u2192', padL + chartW / 2, H - 1);
+  ctx.save();
+  ctx.translate(10, padT + chartH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Position \u2192', 0, 0);
+  ctx.restore();
+}
+
+function drawPECurve() {
+  const canvas = document.getElementById('pe-curve');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const mode   = document.getElementById('pe-mode').value;
+  const maxPos = +document.getElementById('pe-pos').value;
+  const dimI   = +document.getElementById('pe-dim').value;
+
+  const padL = 46, padB = 30, padT = 20, padR = 20;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  // Grid
+  ctx.strokeStyle = '#21262d';
+  ctx.lineWidth = 1;
+  [-1, -0.5, 0, 0.5, 1].forEach(v => {
+    const y = padT + chartH * (1 - (v + 1) / 2);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(v.toFixed(1), padL - 4, y + 3);
+  });
+
+  // Sine curve (dim 2i)
+  const sinDim = dimI * 2;
+  ctx.strokeStyle = '#58a6ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let p = 0; p < maxPos; p++) {
+    const val = peValue(p, sinDim, 'sine');
+    const x = padL + (p / (maxPos - 1)) * chartW;
+    const y = padT + chartH * (1 - (val + 1) / 2);
+    p === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Cosine curve (dim 2i+1)
+  ctx.strokeStyle = '#ffa657';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let p = 0; p < maxPos; p++) {
+    const val = peValue(p, sinDim + 1, 'cosine');
+    const x = padL + (p / (maxPos - 1)) * chartW;
+    const y = padT + chartH * (1 - (val + 1) / 2);
+    p === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // X axis positions
+  ctx.fillStyle = '#484f58';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  for (let p = 0; p <= maxPos; p += Math.max(1, Math.floor(maxPos / 8))) {
+    ctx.fillText(p, padL + (p / (maxPos - 1 || 1)) * chartW, H - 6);
+  }
+
+  // Legend
+  ctx.font = '11px "Segoe UI",sans-serif';
+  ctx.fillStyle = '#58a6ff';
+  ctx.textAlign = 'left';
+  ctx.fillText('sin(pos / 10000^(' + (2*dimI) + '/' + PE_DMODEL + '))  [dim ' + (2*dimI) + ']', padL + 4, padT - 4);
+  ctx.fillStyle = '#ffa657';
+  ctx.fillText('cos(...)  [dim ' + (2*dimI+1) + ']', padL + 280, padT - 4);
+
+  // Axis title
+  ctx.fillStyle = '#484f58';
+  ctx.textAlign = 'center';
+  ctx.fillText('Position \u2192', padL + chartW / 2, H - 1);
+}
+
+function initPosEnc() {
+  drawPosEnc();
+  drawPECurve();
+}
+
+document.getElementById('pe-mode').addEventListener('change', () => { drawPosEnc(); drawPECurve(); });
+document.getElementById('pe-pos').addEventListener('input', function() {
+  document.getElementById('pe-pos-val').textContent = this.value;
+  drawPosEnc(); drawPECurve();
+});
+document.getElementById('pe-dim').addEventListener('input', function() {
+  document.getElementById('pe-dim-val').textContent = this.value;
+  drawPECurve();
+});
+
+/* ================================================================
+   SCALED DOT-PRODUCT ATTENTION (STEP BY STEP)
+   ================================================================ */
+const SDPA_TOKENS = ['cat', 'sat', 'mat'];
+const SDPA_DK     = 4;
+const SDPA_Q = [[0.80, 0.30, -0.50, 0.20], [0.10, 0.90, 0.30, -0.40], [-0.30, 0.50, 0.80, 0.10]];
+const SDPA_K = [[0.70, 0.40, -0.30, 0.50], [0.20, 0.80, 0.40, -0.20], [-0.40, 0.30, 0.70, 0.20]];
+const SDPA_V = [[0.90, 0.20, 0.10, -0.30], [0.30, 0.80, -0.20, 0.40], [0.10, 0.40, 0.90, 0.20]];
+
+// Pre-compute all stages
+const SDPA_QKT = SDPA_Q.map(q => SDPA_K.map(k => q.reduce((s, v, d) => s + v * k[d], 0)));
+const SDPA_QKTS = SDPA_QKT.map(row => row.map(v => v / Math.sqrt(SDPA_DK)));
+const SDPA_ATT  = SDPA_QKTS.map(row => softmax(row, 1));
+const SDPA_OUT  = SDPA_ATT.map(attn => SDPA_V[0].map((_, d) => attn.reduce((s, a, j) => s + a * SDPA_V[j][d], 0)));
+
+const SDPA_STEPS = [
+  { label: 'Step 1 / 4 \u2014 Linear Projections: Q, K, V',
+    formula: 'Q = X\u00B7W_Q    K = X\u00B7W_K    V = X\u00B7W_V    (d_k = 4, n_tokens = 3)\nW_Q, W_K, W_V are learned weight matrices. Each row is one token\'s projected vector.' },
+  { label: 'Step 2 / 4 \u2014 Raw Scores: QK\u1D40',
+    formula: 'Scores = Q \u00B7 K\u1D40   \u2192 shape (3 \u00D7 3)\nEach cell [i,j] = dot product of query i and key j. Measures how relevant token j is to token i.' },
+  { label: 'Step 3 / 4 \u2014 Scale & Softmax \u2192 Attention Weights',
+    formula: 'Scaled = Scores / \u221Ad_k = Scores / \u221A' + SDPA_DK + ' \u2248 Scores / ' + Math.sqrt(SDPA_DK).toFixed(3) + '\nAttn = softmax(Scaled) \u2014 each row sums to 1.0 (a probability distribution over tokens).' },
+  { label: 'Step 4 / 4 \u2014 Output: Attn \u00D7 V',
+    formula: 'Output = Attn \u00B7 V   \u2192 shape (3 \u00D7 d_k)\nEach output row is a weighted blend of value rows, where weights come from the attention distribution.' },
+];
+
+let sdpaStep = 0;
+
+function sdpaColorFor(val, isAttn) {
+  const t = isAttn ? Math.max(0, Math.min(1, val)) : Math.max(0, Math.min(1, (val + 1) / 2));
+  let r, g, b;
+  if (t < 0.5) {
+    const tt = t * 2;
+    r = Math.round(255 + (13  - 255) * tt);
+    g = Math.round(102 + (17  - 102) * tt);
+    b = Math.round(0   + (23  - 0)   * tt);
+  } else {
+    const tt = (t - 0.5) * 2;
+    r = Math.round(13  + (88  - 13)  * tt);
+    g = Math.round(17  + (166 - 17)  * tt);
+    b = Math.round(23  + (255 - 23)  * tt);
+  }
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+
+function sdpaDrawMat(ctx, mat, ox, oy, cW, cH, title, rowLbls, colLbls, isAttn) {
+  const n = mat.length, m = mat[0].length;
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = 'bold 13px "Segoe UI",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(title, ox + m * cW / 2, oy - 22);
+
+  mat.forEach((row, ri) => {
+    if (rowLbls) {
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(rowLbls[ri], ox - 5, oy + ri * cH + cH / 2 + 4);
+    }
+    row.forEach((val, ci) => {
+      if (ri === 0 && colLbls) {
+        ctx.fillStyle = '#8b949e';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(colLbls[ci], ox + ci * cW + cW / 2, oy - 7);
+      }
+      ctx.fillStyle = sdpaColorFor(val, isAttn);
+      ctx.fillRect(ox + ci * cW, oy + ri * cH, cW - 2, cH - 2);
+
+      const bright = (isAttn ? val > 0.4 : Math.abs(val) > 0.5) ? 230 : 160;
+      ctx.fillStyle = 'rgba(' + bright + ',' + bright + ',' + bright + ',0.9)';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(val.toFixed(2), ox + ci * cW + cW / 2, oy + ri * cH + cH / 2 + 4);
+    });
+  });
+
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(ox - 1, oy - 1, m * cW + 1, n * cH + 1);
+}
+
+function drawSDPA() {
+  const canvas = document.getElementById('sdpa-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const cW = 52, cH = 48;
+  const toks = SDPA_TOKENS;
+  const dims = ['\u0064\u2080', '\u0064\u2081', '\u0064\u2082', '\u0064\u2083'];
+
+  if (sdpaStep === 0) {
+    // Three matrices Q, K, V side by side
+    sdpaDrawMat(ctx, SDPA_Q, 56,  50, cW, cH, 'Q  (Query)',  toks, dims, false);
+    sdpaDrawMat(ctx, SDPA_K, 290, 50, cW, cH, 'K  (Key)',    toks, dims, false);
+    sdpaDrawMat(ctx, SDPA_V, 524, 50, cW, cH, 'V  (Value)',  toks, dims, false);
+    ctx.fillStyle = '#484f58';
+    ctx.font = '11px "Segoe UI",sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Each row = one token representation. Each column = one projected dimension.', W / 2, 240);
+
+  } else if (sdpaStep === 1) {
+    // QK^T (3x3) centered
+    const ox = (W - 3 * cW) / 2 - 30;
+    sdpaDrawMat(ctx, SDPA_QKT, ox, 50, cW, cH, 'QK\u1D40  (raw scores)', toks, toks, false);
+    ctx.fillStyle = '#484f58';
+    ctx.font = '11px "Segoe UI",sans-serif';
+    ctx.textAlign = 'center';
+    const r = SDPA_QKT;
+    ctx.fillText('cat\u2192cat: ' + r[0][0].toFixed(3) + '   cat\u2192sat: ' + r[0][1].toFixed(3) + '   cat\u2192mat: ' + r[0][2].toFixed(3), W / 2, 230);
+    ctx.fillText('Score [i,j] = row i of Q  \u00B7  row j of K', W / 2, 250);
+    ctx.fillStyle = '#58a6ff';
+    ctx.fillText('\u221Ad_k = \u221A' + SDPA_DK + ' = ' + Math.sqrt(SDPA_DK).toFixed(4), W / 2, 278);
+
+  } else if (sdpaStep === 2) {
+    // Scaled left, softmaxed right
+    sdpaDrawMat(ctx, SDPA_QKTS, 56,  50, cW, cH, 'Scaled  \u00F7 \u221A' + SDPA_DK, toks, toks, false);
+
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('softmax', W / 2, 125);
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = '#58a6ff';
+    ctx.fillText('\u2192', W / 2, 148);
+
+    sdpaDrawMat(ctx, SDPA_ATT, W - 56 - 3 * cW, 50, cW, cH, 'Attention Weights', toks, toks, true);
+
+    ctx.fillStyle = '#3fb950';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'left';
+    SDPA_ATT.forEach((row, i) => {
+      const sum = row.reduce((a, b) => a + b, 0);
+      ctx.fillText('row ' + i + ' \u03A3 = ' + sum.toFixed(3), W - 56 - 3 * cW + 3 * cW + 10, 50 + i * cH + cH / 2 + 4);
+    });
+
+  } else if (sdpaStep === 3) {
+    // Attn x V = Out
+    sdpaDrawMat(ctx, SDPA_ATT, 30,  50, cW - 4, cH, 'Attn Weights', toks, toks, true);
+
+    ctx.fillStyle = '#58a6ff';
+    ctx.font = '22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u00D7', 200, 128);
+
+    sdpaDrawMat(ctx, SDPA_V,   220, 50, cW - 4, cH, 'V  (Value)', toks, dims, false);
+
+    ctx.font = '22px sans-serif';
+    ctx.fillText('=', 430, 128);
+
+    sdpaDrawMat(ctx, SDPA_OUT, 452, 50, cW - 4, cH, 'Output', toks, dims, false);
+
+    ctx.fillStyle = '#484f58';
+    ctx.font = '11px "Segoe UI",sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Each output row = weighted blend of value rows, weighted by that token\'s attention distribution.', W / 2, 238);
+  }
+
+  // Update formula box
+  document.getElementById('sdpa-formula').textContent = SDPA_STEPS[sdpaStep].formula;
+}
+
+function updateSDPANav() {
+  document.getElementById('sdpa-prev').disabled = sdpaStep === 0;
+  document.getElementById('sdpa-next').disabled = sdpaStep === SDPA_STEPS.length - 1;
+  document.getElementById('sdpa-step-label').textContent = SDPA_STEPS[sdpaStep].label;
+
+  const dots = document.getElementById('sdpa-dots');
+  dots.innerHTML = '';
+  SDPA_STEPS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === sdpaStep ? ' active' : '');
+    dots.appendChild(d);
+  });
+}
+
+function initSDPA() {
+  updateSDPANav();
+  drawSDPA();
+}
+
+document.getElementById('sdpa-prev').addEventListener('click', () => {
+  if (sdpaStep > 0) { sdpaStep--; updateSDPANav(); drawSDPA(); }
+});
+document.getElementById('sdpa-next').addEventListener('click', () => {
+  if (sdpaStep < SDPA_STEPS.length - 1) { sdpaStep++; updateSDPANav(); drawSDPA(); }
+});
+
+/* ================================================================
+   FFN NEURONS
+   ================================================================ */
+const FFN_TOKEN_NAMES = ['cat', 'sat', 'mat', 'king', 'queen', 'neural', 'model'];
+const FFN_NEURON_LABELS = [
+  'syntax-pos', 'verb-det', 'noun-anim', 'article', 'prep-obj',
+  'semantic-ref', 'royalty', 'emotion', 'tech-ai', 'motion',
+  'abstract', 'concrete', 'plural', 'temporal', 'spatial', 'causal',
+  'subject', 'object', 'modifier', 'connector', 'negation', 'intensifier',
+  'entity', 'action', 'state', 'relation', 'number', 'context',
+  'memory', 'predict', 'encode', 'decode',
+];
+
+function ffnActivation(tokenIdx, layerIdx, neuronIdx) {
+  // Seeded deterministic "activation" – mimics real patterns
+  const rng = seededRand(tokenIdx * 1000 + layerIdx * 100 + neuronIdx);
+  // Early layers: sparse, sparse pattern. Late: denser activations
+  const sparsity = [0.6, 0.45, 0.35][layerIdx];
+  const raw = rng() * 2 - 1 + (rng() > sparsity ? rng() * 1.5 : 0);
+  return Math.max(0, raw); // ReLU
+}
+
+function drawFFN() {
+  const canvas = document.getElementById('ffn-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const tokenIdx = +document.getElementById('ffn-token').value;
+  const layerIdx = +document.getElementById('ffn-layer').value;
+  const nNeurons = +document.getElementById('ffn-n').value;
+
+  const padL = 110, padR = 20, padT = 40, padB = 30;
+  const chartW = W - padL - padR;
+  const barH   = (H - padT - padB) / nNeurons - 2;
+
+  // Column header
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = 'bold 12px "Segoe UI",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('FFN Hidden-Layer Neuron Activations — Token: "' + FFN_TOKEN_NAMES[tokenIdx] + '"', padL + chartW / 2, 18);
+
+  const maxAct = 2.0;
+  for (let ni = 0; ni < nNeurons; ni++) {
+    const act = ffnActivation(tokenIdx, layerIdx, ni);
+    const y   = padT + ni * (barH + 2);
+    const barW = Math.max(0, (act / maxAct) * chartW);
+    const hue  = act < 0.3 ? 0.15 : act < 1.0 ? 0.55 : 0.33;
+    const saturation = 0.6 + act * 0.2;
+    // Use pre-defined color palette
+    const color = act < 0.01 ? '#21262d' : act < 0.5 ? '#1a3a5c' : act < 1.2 ? '#1f6feb' : '#3fb950';
+
+    // Bar background
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(padL, y, chartW, barH);
+
+    // Bar fill
+    ctx.fillStyle = color;
+    const grad = ctx.createLinearGradient(padL, 0, padL + barW, 0);
+    grad.addColorStop(0, color + 'cc');
+    grad.addColorStop(1, color);
+    ctx.fillStyle = grad;
+    ctx.fillRect(padL, y, barW, barH);
+
+    // Neuron label
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    const label = FFN_NEURON_LABELS[ni % FFN_NEURON_LABELS.length];
+    ctx.fillText('#' + ni + ' ' + label, padL - 5, y + barH / 2 + 3);
+
+    // Value label
+    if (act > 0.05) {
+      ctx.fillStyle = '#e6edf3';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(act.toFixed(3), padL + barW + 4, y + barH / 2 + 3);
+    }
+  }
+
+  // X axis ticks
+  ctx.fillStyle = '#484f58';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  [0, 0.5, 1.0, 1.5, 2.0].forEach(v => {
+    const x = padL + (v / maxAct) * chartW;
+    ctx.fillText(v.toFixed(1), x, H - 8);
+    ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, H - padB); ctx.stroke();
+  });
+}
+
+document.getElementById('ffn-token').addEventListener('change', drawFFN);
+document.getElementById('ffn-layer').addEventListener('change', drawFFN);
+document.getElementById('ffn-n').addEventListener('input', function() {
+  document.getElementById('ffn-n-val').textContent = this.value;
+  drawFFN();
+});
+
+document.getElementById('ffn-canvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const my = e.clientY - rect.top;
+  const nNeurons = +document.getElementById('ffn-n').value;
+  const padT = 40, padB = 30;
+  const barH = (this.height - padT - padB) / nNeurons - 2;
+  const ni = Math.floor((my - padT) / (barH + 2));
+  if (ni < 0 || ni >= nNeurons) { document.getElementById('ffn-hover-info').textContent = 'Hover a neuron bar to see its pre/post-activation value.'; return; }
+  const tokenIdx = +document.getElementById('ffn-token').value;
+  const layerIdx = +document.getElementById('ffn-layer').value;
+  const act = ffnActivation(tokenIdx, layerIdx, ni);
+  const preAct = act - 0.18; // approximate pre-activation (before ReLU)
+  const label = FFN_NEURON_LABELS[ni % FFN_NEURON_LABELS.length];
+  document.getElementById('ffn-hover-info').innerHTML =
+    'Neuron <strong style="color:#58a6ff">#' + ni + ' (' + label + ')</strong> — ' +
+    'Pre-ReLU: <strong style="color:#ffa657">' + preAct.toFixed(4) + '</strong>  ' +
+    'Post-ReLU: <strong style="color:#3fb950">' + act.toFixed(4) + '</strong>  ' +
+    (act < 0.01 ? '<span style="color:#484f58">🔴 Dead neuron (ReLU=0)</span>' : '<span style="color:#3fb950">🟢 Active</span>');
+});
+
+// Register FFN in nav
+document.querySelector('[data-panel="ffn"]').addEventListener = document.querySelector('[data-panel="ffn"]').addEventListener;
+
+/* ================================================================
+   LAYERNORM EXPLORER
+   ================================================================ */
+const LN_STEPS = [
+  { label: 'Step 1 / 4 \u2014 Raw Activations',
+    formula: 'x = raw hidden-state vector (12 dimensions)\nValues can be large, small, or extreme \u2014 making training unstable.' },
+  { label: 'Step 2 / 4 \u2014 Subtract Mean (\u03BC)',
+    formula: '\u03BC = (1/d) \u03A3 x_i    d = 12\nCentered x\u0302 = x - \u03BC\nMean is now 0; values shifted toward center.' },
+  { label: 'Step 3 / 4 \u2014 Normalize by Std Dev (\u03C3)',
+    formula: '\u03C3\u00B2 = (1/d) \u03A3 (x_i - \u03BC)\u00B2\nNormalized: x\u0302 = (x - \u03BC) / \u221A(\u03C3\u00B2 + \u03B5)\nAll values now \u2248N(0,1). Outlier is tamed.' },
+  { label: 'Step 4 / 4 \u2014 Apply \u03B3 (scale) and \u03B2 (shift)',
+    formula: 'Output = \u03B3 \u00B7 x\u0302 + \u03B2\n\u03B3 and \u03B2 are learned parameters (one per dimension).\nThe model can re-scale/shift to any distribution it finds useful.' },
+];
+let lnStep = 0;
+
+function getLNData() {
+  const outlier = +document.getElementById('ln-outlier').value;
+  const rng = seededRand(777);
+  const raw = Array.from({length:12}, () => rng() * 4 - 2);
+  raw[4] = raw[4] + outlier * 2.5;
+  const rng2 = seededRand(42);
+  const gamma = Array.from({length:12}, () => 0.5 + rng2() * 1.5);
+  const beta  = Array.from({length:12}, () => rng2() * 0.8 - 0.4);
+  const mean = raw.reduce((a,b)=>a+b,0)/raw.length;
+  const centered = raw.map(v => v - mean);
+  const variance = centered.reduce((a,v)=>a+v*v,0)/centered.length;
+  const std = Math.sqrt(variance + 1e-5);
+  const normed = centered.map(v => v/std);
+  const output = normed.map((v,i) => gamma[i]*v + beta[i]);
+  return { raw, centered, normed, output, mean, std, gamma, beta };
+}
+
+function drawLN() {
+  const canvas = document.getElementById('ln-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const d = getLNData();
+  const n = 12;
+  const padL = 40, padR = 20, padT = 50, padB = 30;
+  const chartW = W - padL - padR;
+  const barGroupW = chartW / n;
+  const barW2 = barGroupW * 0.55;
+  let series, color, title, yMax;
+  if (lnStep === 0) {
+    series = d.raw; color = '#58a6ff'; title = 'Raw x';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 3) * 1.2;
+  } else if (lnStep === 1) {
+    series = d.centered; color = '#d2a8ff'; title = 'Centered (x - \u03BC)';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 2) * 1.2;
+  } else if (lnStep === 2) {
+    series = d.normed; color = '#3fb950'; title = 'Normalized'; yMax = 3;
+  } else {
+    series = d.output; color = '#ffa657'; title = 'Output (\u03B3 \u00B7 x\u0302 + \u03B2)';
+    yMax = Math.max(Math.abs(Math.min(...series)), Math.max(...series), 2) * 1.2;
+  }
+  const chartH = H - padT - padB;
+  const midY = padT + chartH / 2;
+
+  // Zero line
+  ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(padL, midY); ctx.lineTo(padL+chartW, midY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Mean line on step 1
+  if (lnStep === 1) {
+    const meanY = midY - (d.mean / yMax) * (chartH/2);
+    ctx.strokeStyle = '#ffa657'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(padL, meanY); ctx.lineTo(padL+chartW, meanY); ctx.stroke();
+    ctx.fillStyle = '#ffa657'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('\u03BC = ' + d.mean.toFixed(3), padL + 4, meanY - 4);
+  }
+
+  const outlierStrength = +document.getElementById('ln-outlier').value;
+  series.forEach((v, i) => {
+    const x = padL + i * barGroupW + (barGroupW - barW2)/2;
+    const barH3 = Math.abs(v / yMax) * (chartH / 2);
+    const isOutlier = i === 4 && lnStep < 3 && outlierStrength > 0;
+    ctx.fillStyle = (isOutlier ? '#f78166' : color) + 'cc';
+    ctx.fillRect(x, v >= 0 ? midY - barH3 : midY, barW2, barH3);
+    ctx.strokeStyle = isOutlier ? '#f78166' : color; ctx.lineWidth = 1;
+    ctx.strokeRect(x, v >= 0 ? midY - barH3 : midY, barW2, barH3);
+    ctx.fillStyle = '#8b949e'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(v.toFixed(1), x + barW2/2, v >= 0 ? midY - barH3 - 3 : midY + barH3 + 10);
+  });
+
+  ctx.fillStyle = color; ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(title + ' (d=12)', padL + chartW/2, 20);
+  ctx.fillStyle = '#484f58'; ctx.font = '11px monospace'; ctx.textAlign = 'right';
+  ctx.fillText('\u03BC=' + d.mean.toFixed(3) + '  \u03C3=' + d.std.toFixed(3), padL + chartW, padT - 5);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+  [yMax, 0, -yMax].forEach(v => {
+    const y2 = midY - (v/yMax) * (chartH/2);
+    ctx.fillText(v.toFixed(1), padL-4, y2+3);
+  });
+
+  document.getElementById('ln-formula').textContent = LN_STEPS[lnStep].formula;
+}
+
+function drawLNCompare() {
+  const canvas = document.getElementById('ln-compare');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const d = getLNData();
+  const n = 12;
+  const padL = 10, padR = 10, padT = 30, padB = 20;
+  const halfW = (W - padL - padR - 10) / 2;
+  const barW3 = halfW / n * 0.6;
+  const allVals = [...d.raw, ...d.output];
+  const yMax2 = Math.max(Math.abs(Math.min(...allVals)), Math.max(...allVals)) * 1.2;
+  const chartH2 = H - padT - padB;
+  const midY2 = padT + chartH2 / 2;
+  [[d.raw, '#58a6ff', 'Before', padL], [d.output, '#ffa657', 'After', padL + halfW + 10]].forEach(([series2, color2, label2, ox]) => {
+    ctx.fillStyle = color2; ctx.font = 'bold 11px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(label2, ox + halfW/2, 16);
+    ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1; ctx.setLineDash([2,2]);
+    ctx.beginPath(); ctx.moveTo(ox, midY2); ctx.lineTo(ox+halfW, midY2); ctx.stroke();
+    ctx.setLineDash([]);
+    series2.forEach((v, i) => {
+      const x2 = ox + i * (halfW/n) + (halfW/n - barW3)/2;
+      const bh2 = Math.abs(v/yMax2) * (chartH2/2);
+      ctx.fillStyle = color2 + '88';
+      ctx.fillRect(x2, v >= 0 ? midY2-bh2 : midY2, barW3, bh2);
+    });
+  });
+}
+
+function updateLNNav() {
+  document.getElementById('ln-prev').disabled = lnStep === 0;
+  document.getElementById('ln-next').disabled = lnStep === LN_STEPS.length - 1;
+  document.getElementById('ln-step-label').textContent = LN_STEPS[lnStep].label;
+  const dotsEl = document.getElementById('ln-dots');
+  dotsEl.innerHTML = '';
+  LN_STEPS.forEach((_,i) => {
+    const d3 = document.createElement('div');
+    d3.className = 'step-dot' + (i===lnStep?' active':'');
+    dotsEl.appendChild(d3);
+  });
+}
+
+function initLayerNorm() { updateLNNav(); drawLN(); drawLNCompare(); }
+
+document.getElementById('ln-prev').addEventListener('click', () => {
+  if (lnStep > 0) { lnStep--; updateLNNav(); drawLN(); }
+});
+document.getElementById('ln-next').addEventListener('click', () => {
+  if (lnStep < LN_STEPS.length-1) { lnStep++; updateLNNav(); drawLN(); }
+});
+document.getElementById('ln-outlier').addEventListener('input', function() {
+  document.getElementById('ln-outlier-val').textContent = this.value;
+  drawLN(); drawLNCompare();
+});
+document.getElementById('ln-placement').addEventListener('change', function() {
+  const isPre = this.value === 'pre';
+  document.getElementById('ln-placement-title').textContent = isPre ? 'Pre-LN (Modern GPT)' : 'Post-LN (Original)';
+  document.getElementById('ln-placement-text').textContent = isPre
+    ? 'Pre-LN (also called "Pre-Norm") applies LayerNorm before the sublayer: LN(x) goes into Attention/FFN, then the residual is added: x + Sublayer(LN(x)). This is more stable and widely used in GPT-2, GPT-3, LLaMA.'
+    : 'Post-LN applies LayerNorm after the sublayer and residual: LN(x + Sublayer(x)). Original in "Attention is All You Need" but requires careful warm-up; unstable with large learning rates.';
+});
+
+/* ================================================================
+   TRAINING DYNAMICS
+   ================================================================ */
+function genLoss(steps, start, end, noiseAmp, seed) {
+  const rng = seededRand(seed);
+  return Array.from({ length: steps }, (_, i) => {
+    const t = i / (steps - 1);
+    const base = end + (start - end) * Math.exp(-4.5 * t);
+    return Math.max(end * 0.92, base + (rng() - 0.5) * 2 * noiseAmp);
+  });
+}
+
+function genReward(steps, seed) {
+  const rng = seededRand(seed);
+  return Array.from({ length: steps }, (_, i) => {
+    const t = i / (steps - 1);
+    return Math.min(0.96, Math.max(0.05, 0.12 + 0.72 * (1 - Math.exp(-5 * t)) + (rng() - 0.5) * 0.09));
+  });
+}
+
+const TRAIN_PHASES = {
+  pretrain: {
+    title: 'Pre-training',
+    color: '#58a6ff',
+    text: 'Train on hundreds of billions of tokens from the web, books, and code. The model learns language structure, factual knowledge, and basic reasoning via next-token prediction. Loss typically starts at 10\u201312 and converges around 2\u20133.',
+    series: genLoss(500, 11.4, 2.2, 0.5, 42),
+    ylabel: 'Cross-Entropy Loss',
+    isReward: false,
+  },
+  sft: {
+    title: 'Supervised Fine-tuning (SFT)',
+    color: '#3fb950',
+    text: 'Fine-tune on 10k\u2013100k curated instruction-response pairs. The model quickly adapts to follow instructions and produce well-formatted, helpful outputs. Loss drops from ~2.5 to ~1.4 within a few hundred steps.',
+    series: genLoss(200, 2.5, 1.35, 0.12, 77),
+    ylabel: 'Cross-Entropy Loss',
+    isReward: false,
+  },
+  rlhf: {
+    title: 'RLHF / DPO Alignment',
+    color: '#ffa657',
+    text: 'Human raters compare pairs of model outputs and mark which is better. A reward model is trained on these preferences. PPO (or DPO) then optimizes the policy to maximize reward while maintaining low KL divergence from the SFT baseline.',
+    series: genReward(300, 99),
+    ylabel: 'Reward Score',
+    isReward: true,
+  },
+};
+
+let currentPhase = 'pretrain';
+
+function drawTraining() {
+  if (trainCompareMode) { drawTrainingCompare(); return; }
+  const canvas = document.getElementById('train-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const ph = TRAIN_PHASES[currentPhase];
+  const series = ph.series, color = ph.color, ylabel = ph.ylabel, isReward = ph.isReward, title = ph.title;
+  const yMin = 0;
+  const yMax = isReward ? 1 : Math.ceil(series[0] * 1.1);
+
+  const padL = 58, padR = 20, padT = 32, padB = 44;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  // Horizontal grid lines
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const yv = yMin + (yMax - yMin) * i / 5;
+    const y  = padT + chartH * (1 - i / 5);
+    ctx.strokeStyle = '#21262d';
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(yv.toFixed(isReward ? 2 : 1), padL - 5, y + 4);
+  }
+
+  // Vertical grid lines + X labels
+  ctx.setLineDash([3, 3]);
+  for (let i = 0; i <= 5; i++) {
+    const x = padL + chartW * i / 5;
+    ctx.strokeStyle = '#21262d';
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + chartH); ctx.stroke();
+    ctx.fillStyle = '#484f58';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(Math.round(series.length * i / 5), x, padT + chartH + 16);
+  }
+  ctx.setLineDash([]);
+
+  // Fill area
+  ctx.beginPath();
+  series.forEach((v, i) => {
+    const x = padL + chartW * i / (series.length - 1);
+    const y = padT + chartH * (1 - (v - yMin) / (yMax - yMin));
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(padL + chartW, padT + chartH);
+  ctx.lineTo(padL, padT + chartH);
+  ctx.closePath();
+  ctx.fillStyle = color + '22';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  series.forEach((v, i) => {
+    const x = padL + chartW * i / (series.length - 1);
+    const y = padT + chartH * (1 - (v - yMin) / (yMax - yMin));
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Final value marker
+  const lastV = series[series.length - 1];
+  const lx = padL + chartW;
+  const ly = padT + chartH * (1 - (lastV - yMin) / (yMax - yMin));
+  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.fillStyle = color;
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(lastV.toFixed(2), lx + 8, ly + 4);
+
+  // Axis labels
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '12px "Segoe UI",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Training Steps', padL + chartW / 2, H - 4);
+  ctx.save();
+  ctx.translate(13, padT + chartH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText(ylabel, 0, 0);
+  ctx.restore();
+
+  // Title
+  ctx.fillStyle = color;
+  ctx.font = 'bold 13px "Segoe UI",sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(title, padL, 20);
+}
+
+let trainCompareMode = false;
+
+document.getElementById('train-compare').addEventListener('click', function() {
+  trainCompareMode = !trainCompareMode;
+  this.classList.toggle('active', trainCompareMode);
+  this.textContent = trainCompareMode ? 'Single Phase' : 'Compare All';
+  drawTraining();
+});
+
+function drawTrainingCompare() {
+  const canvas = document.getElementById('train-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const padL = 58, padR = 20, padT = 32, padB = 44;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  // Normalize each series to 0-1 range for overlay comparison
+  ctx.fillStyle = '#58a6ff';
+  ctx.font = 'bold 13px "Segoe UI",sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('All Phases — Normalized Progress (0=start, 1=end)', padL, 20);
+
+  // Grid
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + chartH * i / 5;
+    ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+    ctx.fillText((1 - i / 5).toFixed(1), padL - 5, y + 4);
+  }
+
+  const phaseOrder = ['pretrain', 'sft', 'rlhf'];
+  phaseOrder.forEach(key => {
+    const ph = TRAIN_PHASES[key];
+    const series = ph.series;
+    const yMin = Math.min(...series), yMax = Math.max(...series);
+    const norm = v => (ph.isReward ? v : 1 - (v - yMin) / (yMax - yMin));
+
+    ctx.beginPath();
+    series.forEach((v, i) => {
+      const x = padL + chartW * i / (series.length - 1);
+      const y = padT + chartH * (1 - norm(v));
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = ph.color; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Label at end
+    const last = series[series.length - 1];
+    const ly = padT + chartH * (1 - norm(last));
+    ctx.fillStyle = ph.color; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ph.title, padL + chartW + 4, ly + 4);
+  });
+
+  ctx.fillStyle = '#8b949e'; ctx.font = '12px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Relative Step Progress →', padL + chartW / 2, H - 4);
+}
+
+/* ================================================================
+   GRADIENT FLOW VISUALIZER
+   ================================================================ */
+const GRAD_N_LAYERS = 8;
+
+function computeGradMagnitudes(withResidual, lr) {
+  const mags = [1.0];
+  for (let i = 1; i < GRAD_N_LAYERS; i++) {
+    const rng = seededRand(i * 99 + (withResidual ? 0 : 500));
+    const noise = 0.9 + rng() * 0.2;
+    const prev = mags[mags.length-1];
+    if (withResidual) {
+      mags.push(prev * noise * (1 + 0.25));
+    } else {
+      const baseFactor = lr > 0.01 ? 0.45 + (lr - 0.01) * 2 : 0.45;
+      mags.push(prev * clamp(baseFactor, 0.1, 1.8) * noise);
+    }
+  }
+  return mags;
+}
+
+function drawGradFlow() {
+  const canvas = document.getElementById('grad-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const withResidual = document.getElementById('grad-residual').checked;
+  const lr = +document.getElementById('grad-lr').value / 1000;
+  const mags = computeGradMagnitudes(withResidual, lr);
+
+  const padL = 80, padR = 160, padT = 30, padB = 30;
+  const chartH = H - padT - padB;
+  const layerH = chartH / GRAD_N_LAYERS;
+  const spineX = padL + 60;
+
+  ctx.fillStyle = withResidual ? '#3fb950' : '#f78166';
+  ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText(withResidual ? 'With Residual Connections \u2014 Gradient Flows Stably' : 'Without Residual \u2014 Gradient Vanishes / Explodes', padL, 18);
+
+  mags.forEach((mag, i) => {
+    const layerIdx = GRAD_N_LAYERS - 1 - i;
+    const y = padT + layerIdx * layerH;
+    const isExploding = mag > 2.0;
+    const isDead = mag < 0.05;
+    const blockColor = isExploding ? '#f78166' : isDead ? '#484f58' : withResidual ? '#3fb950' : '#ffa657';
+
+    ctx.fillStyle = blockColor + '33';
+    ctx.strokeStyle = blockColor; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(spineX - 40, y + 2, 80, layerH - 4, 4);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = '#8b949e'; ctx.font = '11px monospace'; ctx.textAlign = 'right';
+    ctx.fillText('Layer ' + (GRAD_N_LAYERS - layerIdx), spineX - 46, y + layerH/2 + 4);
+
+    const barMaxW = padR - 20;
+    const barW4 = Math.min(barMaxW, mag * barMaxW / 2.0);
+    ctx.fillStyle = blockColor + 'aa';
+    ctx.fillRect(spineX + 44, y + layerH/4, barW4, layerH/2);
+    ctx.fillStyle = blockColor; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText(mag.toFixed(3) + (isExploding ? ' !!!' : isDead ? ' (dead)' : ''), spineX + 46 + barW4 + 4, y + layerH/2 + 4);
+
+    const pulseR = Math.min(8, Math.max(2, mag * 4));
+    ctx.beginPath(); ctx.arc(spineX, y + layerH/2, pulseR, 0, Math.PI*2);
+    ctx.fillStyle = blockColor; ctx.fill();
+  });
+
+  ctx.strokeStyle = '#484f58'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(spineX, padT); ctx.lineTo(spineX, padT + chartH); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('\u2191 Backward Pass (gradient flow direction)', spineX, H - 4);
+  ctx.fillStyle = '#484f58'; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Gradient magnitude \u2192', spineX + 46, padT + 10);
+}
+
+document.getElementById('grad-residual').addEventListener('change', drawGradFlow);
+document.getElementById('grad-lr').addEventListener('input', function() {
+  document.getElementById('grad-lr-val').textContent = (this.value/1000).toFixed(3);
+  drawGradFlow();
+});
+
+/* ================================================================
+   SCALING LAWS EXPLORER
+   ================================================================ */
+const SCALING_MODELS = [
+  { label: 'XS (125M)', params: 0.125e9, color: '#58a6ff', alpha: 0.076, A: 406.4 },
+  { label: 'S (1.3B)',  params: 1.3e9,   color: '#3fb950', alpha: 0.076, A: 406.4 },
+  { label: 'M (7B)',    params: 7e9,      color: '#ffa657', alpha: 0.076, A: 406.4 },
+  { label: 'L (70B)',   params: 70e9,     color: '#d2a8ff', alpha: 0.076, A: 406.4 },
+];
+const SCALING_REFS = [
+  { label: 'GPT-2',    flops: 1e20, loss: 3.0,  color: '#58a6ff' },
+  { label: 'LLaMA-7B', flops: 2e22, loss: 1.95, color: '#3fb950' },
+  { label: 'GPT-4\u007E',flops: 2e24,loss: 1.75, color: '#f78166' },
+];
+
+function scalingLoss(params, tokens) {
+  return 406.4 * Math.pow(params, -0.076) + 410.7 * Math.pow(tokens, -0.095) + 1.69;
+}
+
+function drawScalingLaws() {
+  const canvas = document.getElementById('scaling-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const padL = 68, padR = 100, padT = 36, padB = 44;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const xMin = 19, xMax = 25;
+  const yMin = 1.5, yMax = 4.5;
+  const toX = logF => padL + (logF - xMin) / (xMax - xMin) * chartW;
+  const toY = loss => padT + (1 - (loss - yMin) / (yMax - yMin)) * chartH;
+
+  // Grid
+  ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 6; i++) {
+    const x = padL + chartW * i / 6;
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT+chartH); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('10^' + (xMin + i), x, padT+chartH+14);
+  }
+  [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5].forEach(v => {
+    const y = toY(v);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+chartW, y); ctx.stroke();
+    ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+    ctx.fillText(v.toFixed(1), padL-5, y+3);
+  });
+
+  // Model curves
+  SCALING_MODELS.forEach(m => {
+    ctx.strokeStyle = m.color; ctx.lineWidth = 2.5; ctx.beginPath();
+    let first = true;
+    for (let logC = xMin; logC <= xMax; logC += 0.05) {
+      const C = Math.pow(10, logC);
+      const tokens = C / (6 * m.params);
+      const loss = scalingLoss(m.params, tokens);
+      if (loss < yMin || loss > yMax) { first = true; continue; }
+      const x = toX(logC), y = toY(loss);
+      first ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      first = false;
+    }
+    ctx.stroke();
+    // Label at right edge
+    const lastTokens = Math.pow(10, xMax) / (6 * m.params);
+    const lastLoss = scalingLoss(m.params, lastTokens);
+    if (lastLoss >= yMin && lastLoss <= yMax) {
+      ctx.fillStyle = m.color; ctx.font = '11px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(m.label, padL + chartW + 4, toY(lastLoss) + 4);
+    }
+  });
+
+  // Chinchilla optimal frontier (dotted)
+  ctx.strokeStyle = '#ffffff33'; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  let fFirst = true;
+  for (let logC = xMin; logC <= xMax; logC += 0.1) {
+    const C = Math.pow(10, logC);
+    const Nopt = clamp(0.41 * Math.pow(C, 0.49), 1e8, 1e11);
+    const Dopt = C / (6 * Nopt);
+    const loss = scalingLoss(Nopt, Dopt);
+    if (loss < yMin || loss > yMax) { fFirst = true; continue; }
+    fFirst ? ctx.moveTo(toX(logC), toY(loss)) : ctx.lineTo(toX(logC), toY(loss));
+    fFirst = false;
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = '#ffffff55'; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Chinchilla optimal frontier', padL + chartW*0.3, toY(2.65) - 8);
+
+  // Reference dots
+  SCALING_REFS.forEach(ref => {
+    const x = toX(Math.log10(ref.flops));
+    const y = toY(ref.loss);
+    if (x < padL || x > padL+chartW || y < padT || y > padT+chartH) return;
+    ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2);
+    ctx.fillStyle = ref.color + '88'; ctx.fill();
+    ctx.strokeStyle = ref.color; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = ref.color; ctx.font = '10px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ref.label, x + 8, y - 4);
+  });
+
+  // Axis labels
+  ctx.fillStyle = '#8b949e'; ctx.font = '12px "Segoe UI",sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Compute (FLOPs, log scale) \u2192', padL + chartW/2, H - 4);
+  ctx.save(); ctx.translate(14, padT + chartH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('\u2190 Loss', 0, 0); ctx.restore();
+
+  ctx.fillStyle = '#58a6ff'; ctx.font = 'bold 13px "Segoe UI",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Scaling Laws \u2014 Loss vs. Compute (Chinchilla Power Law)', padL, 20);
+  ctx.fillStyle = '#484f58'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+  ctx.fillText('Loss \u2248 A\u00B7N^(-\u03B1) + B\u00B7D^(-\u03B2) + E  [\u03B1\u22480.076, \u03B2\u22480.095]', padL + chartW, padT - 4);
+}
+
+document.querySelectorAll('.phase-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    trainCompareMode = false;
+    document.getElementById('train-compare').classList.remove('active');
+    document.getElementById('train-compare').textContent = 'Compare All';
+    document.querySelectorAll('.phase-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show/hide gradient flow and scaling canvases
+    const phase = btn.dataset.phase;
+    const isGrad    = phase === 'gradflow';
+    const isScaling = phase === 'scaling';
+    const isNormal  = !isGrad && !isScaling;
+
+    document.getElementById('train-canvas').style.display    = isNormal  ? 'block' : 'none';
+    document.getElementById('grad-controls').style.display   = isGrad    ? 'flex'  : 'none';
+    document.getElementById('grad-canvas').style.display     = isGrad    ? 'block' : 'none';
+    document.getElementById('scaling-canvas').style.display  = isScaling ? 'block' : 'none';
+
+    if (isGrad) {
+      document.getElementById('phase-title').textContent = 'Gradient Flow';
+      document.getElementById('phase-text').textContent  = 'Gradients flow backward through all layers during backpropagation. Without residual connections, they multiply each layer\'s Jacobian \u2014 causing exponential decay (vanishing) or growth (exploding). Residual connections provide a direct highway for gradients, keeping them stable across all layers.';
+      drawGradFlow();
+      return;
+    }
+    if (isScaling) {
+      document.getElementById('phase-title').textContent = 'Scaling Laws';
+      document.getElementById('phase-text').textContent  = 'Model capability follows power laws with compute, data, and parameters (Kaplan et al. 2020; Chinchilla 2022). Doubling compute always helps, but the optimal split between model size and training tokens follows N* \u2248 D* (Chinchilla-optimal). GPT-3 was over-parameterized relative to its training tokens.';
+      drawScalingLaws();
+      return;
+    }
+
+    currentPhase = phase;
+    const ph = TRAIN_PHASES[currentPhase];
+    if (ph) {
+      document.getElementById('phase-title').textContent = ph.title;
+      document.getElementById('phase-text').textContent  = ph.text;
+    }
+    drawTraining();
+  });
+});
+
+/* ================================================================
+   KEYBOARD NAVIGATION
+   ================================================================ */
+const NAV_PANELS = ['tokenizer','attention','transformer','embeddings','generation','about','posenc','sdpa','training','ffn','layernorm'];
+document.addEventListener('keydown', e => {
+  // Don't intercept when typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  const btns = Array.from(document.querySelectorAll('#nav button[data-panel]'));
+  const active = btns.findIndex(b => b.classList.contains('active'));
+  if (e.key === 'ArrowRight' && active < btns.length - 1) {
+    btns[active + 1].click(); e.preventDefault();
+  } else if (e.key === 'ArrowLeft' && active > 0) {
+    btns[active - 1].click(); e.preventDefault();
+  } else if (e.key === 'ArrowRight' && document.getElementById('sdpa').classList.contains('active')) {
+    document.getElementById('sdpa-next').click();
+  } else if (e.key === 'ArrowLeft' && document.getElementById('sdpa').classList.contains('active')) {
+    document.getElementById('sdpa-prev').click();
+  }
+});
+
+/* ================================================================
    INIT
    ================================================================ */
+// Wire FFN panel to nav
+document.querySelector('[data-panel="ffn"]').addEventListener('click', drawFFN);
+
 drawTransformer();
 </script>
 </body>
